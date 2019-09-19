@@ -32,7 +32,7 @@ public class ForceGenerator : MonoBehaviour
         }
         else
         {
-            f_friction_s = f_normal * frictionCoefficient_static;
+            f_friction_s = f_normal * -frictionCoefficient_static;
         }
 
         return f_friction_s;
@@ -40,19 +40,19 @@ public class ForceGenerator : MonoBehaviour
 
     public static Vector2 GenerateForce_friction_kinetic(Vector2 f_normal, Vector2 particleVelocity, float frictionCoefficient_kinetic)
     {
-        Vector2 f_friction_k = -frictionCoefficient_kinetic * f_normal.magnitude * particleVelocity;
+        Vector2 f_friction_k = -frictionCoefficient_kinetic * f_normal.magnitude * particleVelocity.normalized;
         return f_friction_k;
     }
 
     public static Vector2 GenerateForce_drag(Vector2 particleVelocity, Vector2 fluidVelocity, float fluidDensity, float objectArea_crossSection, float objectDragCoefficient)
     {
-        Vector2 f_drag = (0.5f *(particleVelocity - fluidVelocity) * (particleVelocity - fluidVelocity) * objectArea_crossSection * objectDragCoefficient);
+        Vector2 f_drag = (0.5f * fluidDensity * ((particleVelocity - fluidVelocity) * (particleVelocity - fluidVelocity))*objectDragCoefficient * objectArea_crossSection);
         return f_drag;
     }
 
     public static Vector2 GenerateForce_spring(Vector2 particlePosition, Vector2 anchorPosition, float springRestingLength, float springStiffnessCoefficient)
     {
-        Vector2 f_spring = -springStiffnessCoefficient * (Vector2.Distance(particlePosition,anchorPosition) - springRestingLength) * (anchorPosition - particlePosition).normalized;
+        Vector2 f_spring = -springStiffnessCoefficient * (Vector2.Distance(particlePosition,anchorPosition) - springRestingLength) * (anchorPosition - particlePosition);
         return f_spring;
     }
 

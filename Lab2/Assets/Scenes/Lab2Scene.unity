@@ -291,12 +291,17 @@ PrefabInstance:
     - target: {fileID: 954896804001431044, guid: f919bf990dec51643814c196d303349d,
         type: 3}
       propertyPath: angularAcceleration
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 954896804001431044, guid: f919bf990dec51643814c196d303349d,
         type: 3}
       propertyPath: angularVelocity
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 954896804001431044, guid: f919bf990dec51643814c196d303349d,
+        type: 3}
+      propertyPath: velocity.x
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f919bf990dec51643814c196d303349d, type: 3}
