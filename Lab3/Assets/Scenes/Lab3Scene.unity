@@ -384,7 +384,7 @@ PrefabInstance:
     - target: {fileID: 8764257975094811367, guid: f919bf990dec51643814c196d303349d,
         type: 3}
       propertyPath: torque
-      value: 8000
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8764257975094811367, guid: f919bf990dec51643814c196d303349d,
         type: 3}

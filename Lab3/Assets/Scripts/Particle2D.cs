@@ -5,7 +5,7 @@ using UnityEngine;
 public class Particle2D : MonoBehaviour
 {
     private Vector2 position = new Vector2(0,0);
-    private Vector2 localSpace = new Vector2(0.5f, 0f);
+    private Vector2 localSpace = new Vector2(0.5f, 1f);
     public Vector2 velocity = new Vector2(0, 0);
     private Vector2 acceleration = new Vector2(0, 0);
     private float rotation = 0f;
