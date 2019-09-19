@@ -4,18 +4,29 @@ using UnityEngine;
 
 public class Particle2D : MonoBehaviour
 {
-    public Vector2 position;
-    public Vector2 velocity;
-    private Vector2 acceleration;
-    public float rotation;
-    public float angularVelocity;
-    public float angularAcceleration;
+    private Vector2 position = new Vector2(0,0);
+    private Vector2 localSpace = new Vector2(0.5f, 0f);
+    public Vector2 velocity = new Vector2(0, 0);
+    private Vector2 acceleration = new Vector2(0, 0);
+    private float rotation = 0f;
+    private float angularVelocity = 0f;
+    private float angularAcceleration;
     public Physics calculationType;
     public Forces forceType;
+    public Torque torqueType;
     public float startTime;
     [Range(0,Mathf.Infinity)]
     public float mass;
     private float inverseMass;
+
+    public float radius;
+    public float radius2;
+    public float torque;
+    private float inertia;
+    private float inverseInertia;
+    public float dXdimension;
+    public float dYdimension;
+    public float rodLength;
 
     Vector2 force;
 
@@ -45,6 +56,17 @@ public class Particle2D : MonoBehaviour
         force.Set(0.0f, 0.0f);
     }
 
+    private void UpdateAngularAcceleration()
+    {
+        angularAcceleration = inverseInertia * torque;
+        torque = 0.0f;
+    }
+
+    private void ApplyTorque()
+    {
+        torque = Vector3.Cross(localSpace,new Vector2(2,0)).z;
+    }
+
     public enum Forces
     {
         Gravity,
@@ -53,7 +75,8 @@ public class Particle2D : MonoBehaviour
         StaticFriction,
         KinematicFriction,
         Drag,
-        Spring
+        Spring,
+        None
     }
 
     //drop down menu
@@ -63,17 +86,58 @@ public class Particle2D : MonoBehaviour
         Euler
     }
 
+    public enum Torque
+    {
+        Disk,
+        Ring,
+        Rectangle,
+        Rod
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         startTime = Time.time;//needed to ensure everything stays in the correct positions
         Mass = mass;
+        if (mass == 0f)
+        {
+            inertia = 0f;
+            inverseInertia = 0f;
+        }
+        else
+        {
+            if (torqueType == Torque.Disk)
+            {
+                inertia = 0.5f * mass * (radius * radius);
+                inverseInertia = 1.0f / inertia;
+            }
+
+            if (torqueType == Torque.Ring)
+            {
+                inertia = 0.5f * mass * ((radius * radius) + (radius2 * radius2));
+                inverseInertia = 1.0f / inertia;
+            }
+            if (torqueType == Torque.Rectangle)
+            {
+                inertia = 0.083f * mass * ((dXdimension * dXdimension) + (dYdimension * dYdimension));
+                inverseInertia = 1.0f / inertia;
+            }
+            if (torqueType == Torque.Rod)
+            {
+                inertia = 0.083f * mass * (rodLength * rodLength);
+                inverseInertia = 1.0f / inertia;
+            }
+        }
     }
 
-
+    private void Update()
+    {
+        ApplyTorque();
+    }
     // Update is called once per frame
     void FixedUpdate()
     {
+        
         if (forceType == Forces.Gravity)
         {
             AddForce(ForceGenerator.GenerateForce_Gravity(-10.0f, Vector2.up, mass));
@@ -92,7 +156,7 @@ public class Particle2D : MonoBehaviour
         else if (forceType == Forces.StaticFriction)
         {
             Vector2 Normal = ForceGenerator.GenerateForce_Normal(ForceGenerator.GenerateForce_Gravity(-10.0f, Vector2.up, mass), new Vector2(1.0f, 1.0f).normalized);
-            AddForce(ForceGenerator.GenerateForce_friction_static(Normal,new Vector2(5,5),0.2f));
+            AddForce(ForceGenerator.GenerateForce_friction_static(Normal,new Vector2(5,5),0.5f));
         }
 
         else if (forceType == Forces.KinematicFriction)
@@ -132,7 +196,7 @@ public class Particle2D : MonoBehaviour
             //acceleration.x = Mathf.Sin(Time.time - startTime);
             //acceleration.y = Mathf.Cos(Time.time - startTime);
         }
-
+        UpdateAngularAcceleration();
         UpdateAcceleration();
     }
 
