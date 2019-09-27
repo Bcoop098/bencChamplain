@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Particle2D : MonoBehaviour
 {
-    private Vector2 position = new Vector2(0,0);
-    private Vector2 localSpace = new Vector2(0.5f, 1f);
+    private Vector2 position;
+    private Vector2 localSpace;
     public Vector2 velocity = new Vector2(0, 0);
     private Vector2 acceleration = new Vector2(0, 0);
     private float rotation = 0f;
@@ -62,10 +60,7 @@ public class Particle2D : MonoBehaviour
         torque = 0.0f;
     }
 
-    private void ApplyTorque()
-    {
-        torque = Vector3.Cross(localSpace,new Vector2(2,0)).z;
-    }
+    
 
     public enum Forces
     {
@@ -76,7 +71,9 @@ public class Particle2D : MonoBehaviour
         KinematicFriction,
         Drag,
         Spring,
-        None
+        None,
+        Lab3Bonus,
+        TorqueTest
     }
 
     //drop down menu
@@ -97,6 +94,8 @@ public class Particle2D : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        position = new Vector2(transform.position.x, transform.position.y);
+        localSpace = new Vector2(transform.localScale.x,transform.localScale.y);
         startTime = Time.time;//needed to ensure everything stays in the correct positions
         Mass = mass;
         if (mass == 0f)
@@ -132,12 +131,10 @@ public class Particle2D : MonoBehaviour
 
     private void Update()
     {
-        ApplyTorque();
-    }
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-        
+        if (forceType == Forces.TorqueTest)
+        {
+            ApplyTorque(localSpace, new Vector2(-5, 0));
+        }
         if (forceType == Forces.Gravity)
         {
             AddForce(ForceGenerator.GenerateForce_Gravity(-10.0f, Vector2.up, mass));
@@ -145,34 +142,53 @@ public class Particle2D : MonoBehaviour
 
         else if (forceType == Forces.NormalForce)
         {
-            AddForce(ForceGenerator.GenerateForce_Normal(ForceGenerator.GenerateForce_Gravity(-10.0f, Vector2.up, mass), new Vector2 (1.0f,0.0f).normalized));
+            AddForce(ForceGenerator.GenerateForce_Normal(ForceGenerator.GenerateForce_Gravity(-10.0f, Vector2.up, mass), new Vector2(1.0f, 0.0f).normalized));
         }
 
         else if (forceType == Forces.SlidingForce)
         {
-            AddForce(ForceGenerator.GenerateForce_Sliding(ForceGenerator.GenerateForce_Gravity(-10.0f, Vector2.up, mass), ForceGenerator.GenerateForce_Normal(ForceGenerator.GenerateForce_Gravity(-10.0f, Vector2.up, mass), new Vector2(1f,1f).normalized)));
+            AddForce(ForceGenerator.GenerateForce_Sliding(ForceGenerator.GenerateForce_Gravity(-10.0f, Vector2.up, mass), ForceGenerator.GenerateForce_Normal(ForceGenerator.GenerateForce_Gravity(-10.0f, Vector2.up, mass), new Vector2(1f, 1f).normalized)));
         }
 
         else if (forceType == Forces.StaticFriction)
         {
             Vector2 Normal = ForceGenerator.GenerateForce_Normal(ForceGenerator.GenerateForce_Gravity(-10.0f, Vector2.up, mass), new Vector2(1.0f, 1.0f).normalized);
-            AddForce(ForceGenerator.GenerateForce_friction_static(Normal,new Vector2(5,5),0.5f));
+            AddForce(ForceGenerator.GenerateForce_friction_static(Normal, new Vector2(5, 5), 0.5f));
         }
 
         else if (forceType == Forces.KinematicFriction)
         {
-            AddForce(ForceGenerator.GenerateForce_friction_kinetic((ForceGenerator.GenerateForce_Normal(ForceGenerator.GenerateForce_Gravity(-10.0f, Vector2.up, mass), new Vector2(1f, 1f).normalized)), new Vector2(1,1), 0.5f));
+            AddForce(ForceGenerator.GenerateForce_friction_kinetic((ForceGenerator.GenerateForce_Normal(ForceGenerator.GenerateForce_Gravity(-10.0f, Vector2.up, mass), new Vector2(1f, 1f).normalized)), new Vector2(1, 1), 0.5f));
         }
 
         else if (forceType == Forces.Drag)
         {
-            AddForce(ForceGenerator.GenerateForce_drag(new Vector2(1, 1), new Vector2(0.5f, 1),1.0f,2.0f,0.2f));
+            AddForce(ForceGenerator.GenerateForce_drag(new Vector2(1, 1), new Vector2(0.5f, 1), 1.0f, 2.0f, 0.2f));
         }
 
         else if (forceType == Forces.Spring)
         {
             AddForce(ForceGenerator.GenerateForce_spring(position, new Vector2(0, -2), 10.0f, 1.0f));
         }
+
+        else if (forceType == Forces.Lab3Bonus)
+        {
+            Vector2 gravity = ForceGenerator.GenerateForce_Gravity(-10.0f, Vector2.up, mass);
+            //AddForce(gravity);
+            Vector2 Normal = ForceGenerator.GenerateForce_Normal(ForceGenerator.GenerateForce_Gravity(-10.0f, Vector2.up, mass), new Vector2(1.0f, 1.0f).normalized);
+            Vector2 Friction = ForceGenerator.GenerateForce_friction_kinetic((ForceGenerator.GenerateForce_Normal(ForceGenerator.GenerateForce_Gravity(-10.0f, Vector2.up, mass), new Vector2(1f, 1f).normalized)), new Vector2(1, 1), 0.5f);
+            //AddForce(Normal);
+            AddForce(Friction);
+            //ApplyTorque(localSpace, -Friction);
+            ApplyTorque(localSpace, gravity);
+
+        }
+    }
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+
+        
 
         //if Euler is selected in the drop down menu, do this
         if (calculationType == Physics.Euler)
@@ -198,6 +214,11 @@ public class Particle2D : MonoBehaviour
         }
         UpdateAngularAcceleration();
         UpdateAcceleration();
+    }
+
+    void ApplyTorque(Vector2 locationOfForce, Vector2 appliedForce)
+    {
+        torque += Vector3.Cross(locationOfForce,appliedForce).z;
     }
 
     void UpdatePositionEulerExplicit(float deltaTime)
