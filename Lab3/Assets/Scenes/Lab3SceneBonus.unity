@@ -154,7 +154,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   velocity: {x: 0, y: 0}
   calculationType: 0
-  forceType: 9
+  forceType: 8
   torqueType: 0
   startTime: 0
   mass: 1

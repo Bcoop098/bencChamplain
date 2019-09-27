@@ -154,13 +154,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   velocity: {x: 0, y: 0}
   calculationType: 0
-  forceType: 7
+  forceType: 9
   torqueType: 0
   startTime: 0
   mass: 1
   radius: 3
-  radius2: 2.5
-  torque: 5
+  radius2: 2
+  torque: 0
   dXdimension: 0
   dYdimension: 0
   rodLength: 0
@@ -362,7 +362,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   velocity: {x: 0, y: 0}
   calculationType: 0
-  forceType: 7
+  forceType: 9
   torqueType: 3
   startTime: 0
   mass: 1
@@ -614,7 +614,7 @@ PrefabInstance:
     - target: {fileID: 8764257975094811367, guid: f919bf990dec51643814c196d303349d,
         type: 3}
       propertyPath: radius
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8764257975094811367, guid: f919bf990dec51643814c196d303349d,
         type: 3}
@@ -624,7 +624,7 @@ PrefabInstance:
     - target: {fileID: 8764257975094811367, guid: f919bf990dec51643814c196d303349d,
         type: 3}
       propertyPath: forceType
-      value: 7
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 8764257975094811367, guid: f919bf990dec51643814c196d303349d,
         type: 3}
@@ -639,7 +639,7 @@ PrefabInstance:
     - target: {fileID: 8764257975094811367, guid: f919bf990dec51643814c196d303349d,
         type: 3}
       propertyPath: radius2
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8764257975094811367, guid: f919bf990dec51643814c196d303349d,
         type: 3}
@@ -654,7 +654,7 @@ PrefabInstance:
     - target: {fileID: 8764257975094811367, guid: f919bf990dec51643814c196d303349d,
         type: 3}
       propertyPath: rodLength
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f919bf990dec51643814c196d303349d, type: 3}

@@ -247,4 +247,14 @@ public class Particle2D : MonoBehaviour
         angularVelocity += angularAcceleration * deltaTime;
     }
 
+    public Vector2 GetPosition()
+    {
+        return position;
+    }
+
+    public float GetRadius()
+    {
+        return radius;
+    }
+
 }
