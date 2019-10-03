@@ -58,13 +58,24 @@ public abstract class CollisionHull2D : MonoBehaviour
 
     static protected bool CircleVSAABB(CircleHull circle, AABBHull AABB)
     {
-        
-        Vector2 circleBox = new Vector2(Mathf.Max(AABB.min.x + AABB.center.x, Mathf.Min(circle.GetCenter().x, AABB.max.x + AABB.center.x)),
-            Mathf.Max(AABB.min.y + AABB.center.y, Mathf.Min(circle.GetCenter().y, AABB.max.y + AABB.center.y)));
+        float testX = circle.GetCenter().x;
+        float testY = circle.GetCenter().y;
 
-        Vector2 distance = circle.GetCenter() - circleBox;
-        float distanceSQ = Vector2.Dot(distance, distance);
-        if (distanceSQ <= (circle.radius * circle.radius))
+        if (circle.GetCenter().x < AABB.center.x + AABB.min.x)
+            testX = AABB.center.x + AABB.min.x;
+        else if (circle.GetCenter().x > AABB.center.x + AABB.max.x)
+            testX = AABB.center.x + AABB.max.x;
+        if (circle.GetCenter().y < AABB.center.y + AABB.min.y)
+            testX = AABB.center.y + AABB.min.y;
+        else if (circle.GetCenter().y > AABB.center.y + AABB.max.y)
+            testX = AABB.center.y + AABB.max.y;
+
+        float distX = circle.GetCenter().x - testX;
+        float distY = circle.GetCenter().y - testY;
+
+        float distance = (distX * distX) + (distY * distY);
+
+        if (distance <= (circle.radius * circle.radius))
         {
             return true;
         }
@@ -74,15 +85,25 @@ public abstract class CollisionHull2D : MonoBehaviour
 
     static protected bool CircleVSOBB(CircleHull circle, OBBHull OBB)
     {
-        
-        Vector2 halfExtend = (OBB.max - OBB.min) / 2;
         Vector2 circleInOBB = OBB.transform.InverseTransformPoint(circle.GetCenter());
-        Vector2 circleBox = new Vector2(Mathf.Max(-halfExtend.x, Mathf.Min(circleInOBB.x, halfExtend.x)),
-            Mathf.Max(-halfExtend.y, Mathf.Min(circleInOBB.y, halfExtend.y)));
+        float testX = circle.GetCenter().x;
+        float testY = circle.GetCenter().y;
 
-        Vector2 distance = circleInOBB - circleBox;
-        float distanceSQ = Vector2.Dot(distance, distance);
-        if (distanceSQ <= (circle.radius * circle.radius))
+        if (circleInOBB.x < OBB.center.x + OBB.min.x)
+            testX = OBB.center.x + OBB.min.x;
+        else if (circleInOBB.x > OBB.center.x + OBB.max.x)
+            testX = OBB.center.x + OBB.max.x;
+        if (circleInOBB.y < OBB.center.y + OBB.min.y)
+            testX = OBB.center.y + OBB.min.y;
+        else if (circleInOBB.y > OBB.center.y + OBB.max.y)
+            testX = OBB.center.y + OBB.max.y;
+
+        float distX = circleInOBB.x - testX;
+        float distY = circleInOBB.y - testY;
+
+        float distance = (distX * distX) + (distY * distY);
+
+        if (distance <= (circle.radius * circle.radius))
         {
             return true;
         }
@@ -104,32 +125,16 @@ public abstract class CollisionHull2D : MonoBehaviour
 
     static protected bool AABBVSOBB(AABBHull AABB, OBBHull OBB)
     {
-        
-        Vector2 AABBMinTransform = OBB.transform.InverseTransformPoint(AABB.min);
-        Vector2 AABBMaxTransform = OBB.transform.InverseTransformPoint(AABB.max);
-
-        Debug.DrawLine(AABBMinTransform, AABBMaxTransform, Color.red);
-        Debug.DrawLine(OBB.min, OBB.max, Color.green);
-        Debug.DrawLine(AABB.center, OBB.center, Color.yellow);
-
         if (AABB.max.x + AABB.center.x >= OBB.min.x + OBB.center.x && OBB.max.x + OBB.center.x >= AABB.min.x + AABB.center.x)
         {
             if (AABB.max.y + AABB.center.y >= OBB.min.y + OBB.center.y && OBB.max.y + OBB.center.y >= AABB.min.y + AABB.center.y)
             {
-                
-                
+                Vector2 obbMinTransform = OBB.transform.InverseTransformPoint(OBB.min);
+                Vector2 obbMaxTransform = OBB.transform.InverseTransformPoint(OBB.max);
 
-                /*if (obbMinTransform.x > obbMaxTransform.x && obbMinTransform.y > obbMaxTransform.y)
+                if (AABB.max.x + AABB.center.x >= obbMinTransform.x + OBB.center.x && obbMaxTransform.x + OBB.center.x >= AABB.min.x + AABB.center.x)
                 {
-                    Vector2 temp = obbMinTransform;
-                    obbMinTransform = obbMaxTransform;
-                    obbMaxTransform = temp;
-                }*/
-
-
-                if (AABBMaxTransform.x + AABB.center.x >= OBB.min.x + OBB.center.x && OBB.max.x + OBB.center.x >= AABBMinTransform.x + AABB.center.x)
-                {
-                    if (AABBMaxTransform.y + AABB.center.y >= OBB.min.x + OBB.center.y && OBB.max.x + OBB.center.y >= AABBMinTransform.y + AABB.center.y)
+                    if (AABB.max.y + AABB.center.y >= obbMinTransform.y + OBB.center.y && obbMaxTransform.y + OBB.center.y >= AABB.min.y + AABB.center.y)
                     {
                         return true;
                     }
@@ -149,9 +154,9 @@ public abstract class CollisionHull2D : MonoBehaviour
         Vector2 topLeftOBB2 = new Vector2(OBB2.min.x, OBB2.max.y);
         Vector2 bottomRightOBB2 = new Vector2(OBB2.max.x, OBB2.min.y);*/
 
-        Vector2 right1 = new Vector2(Mathf.Cos(OBB1.ZRotation), -Mathf.Sin(OBB1.ZRotation));
+        Vector2 right1 = new Vector2(Mathf.Cos(OBB1.ZRotation), Mathf.Sin(OBB1.ZRotation));
         Vector2 up1 = new Vector2(Mathf.Sin(OBB1.ZRotation), Mathf.Cos(OBB1.ZRotation));
-        Vector2 right2 = new Vector2(Mathf.Cos(OBB2.ZRotation), -Mathf.Sin(OBB2.ZRotation));
+        Vector2 right2 = new Vector2(Mathf.Cos(OBB2.ZRotation), Mathf.Sin(OBB2.ZRotation));
         Vector2 up2 = new Vector2(Mathf.Sin(OBB2.ZRotation), Mathf.Cos(OBB2.ZRotation));
 
         if (OBBTests(right1,OBB1, OBB2))
@@ -209,7 +214,7 @@ public abstract class CollisionHull2D : MonoBehaviour
         return false;
     }
 
-    
+
 }
 
 
