@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class OBBHull : CollisionHull2D
 {
-    public Vector2 min;
-    public Vector2 max;
-    public float ZRotation;
-    public Vector2 center;
+    public Vector2 min = new Vector2(0f, 0f);
+    public Vector2 max = new Vector2(0f, 0f);
+    [Range(0f, 360f)]
+    public float ZRotation = 0f;
+    public Vector2 center = new Vector2(0f, 0f);
 
     public override bool TestCollision(CollisionHull2D other)
     {
@@ -20,8 +21,6 @@ public class OBBHull : CollisionHull2D
             case CollisionHull2D.CollisionType.OBB:
                 return CollisionHull2D.OBBVSOBB(this, other as OBBHull);
 
-
-
             default:
                 break;
         }
@@ -30,33 +29,61 @@ public class OBBHull : CollisionHull2D
     }
 
 
-    //top left is min.x, max y
-    //bottom right is max.x, min.y
-    Vector2 GetRightAxis()
+
+
+    public IEnumerable<Vector2> Vertices
     {
-        return new Vector2(Mathf.Cos(ZRotation), Mathf.Sin(ZRotation));
+        get
+        {
+            List<Vector2> vert = new List<Vector2>();
+
+            float[,] rotoMat = new float[,] { { Mathf.Cos(ZRotation * Mathf.Deg2Rad), -Mathf.Sin(ZRotation * Mathf.Deg2Rad) },
+                                              { Mathf.Sin(ZRotation * Mathf.Deg2Rad) , Mathf.Cos(ZRotation * Mathf.Deg2Rad) } };
+
+            vert.Add(new Vector2(min.x * rotoMat[0, 0] + min.y * rotoMat[1, 0],
+                                 min.x * rotoMat[0, 1] + min.y * rotoMat[1, 1]) + center);
+            vert.Add(new Vector2(max.x * rotoMat[0, 0] + max.y * rotoMat[1, 0],
+                                 max.x * rotoMat[0, 1] + max.y * rotoMat[1, 1]) + center);
+            vert.Add(new Vector2(min.x * rotoMat[0, 0] + max.y * rotoMat[1, 0],
+                                 min.x * rotoMat[0, 1] + max.y * rotoMat[1, 1]) + center);
+            vert.Add(new Vector2(max.x * rotoMat[0, 0] + min.y * rotoMat[1, 0],
+                                 max.x * rotoMat[0, 1] + min.y * rotoMat[1, 1]) + center);
+
+            return vert;
+        }
     }
 
-    Vector2 GetUpAxis()
+    private Vector2 RightAxis
     {
-        return new Vector2(Mathf.Sin(ZRotation), Mathf.Cos(ZRotation));
+        get
+        {
+            return new Vector2(Mathf.Cos(ZRotation * Mathf.Deg2Rad), -Mathf.Sin(ZRotation * Mathf.Deg2Rad));
+        }
     }
 
-    public Vector2 ProjectRight(Vector2 vectorToTest)
+    private Vector2 UpAxis
     {
-        Vector2 ProjectRight = Vector2.Dot(vectorToTest, GetRightAxis()) * GetRightAxis();
-        return ProjectRight;
+        get
+        {
+            return new Vector2(Mathf.Sin(ZRotation * Mathf.Deg2Rad), Mathf.Cos(ZRotation * Mathf.Deg2Rad));
+        }
     }
 
-    public Vector2 ProjectUp(Vector2 vectorToTest)
+    public IEnumerable<Vector2> NormalAxis
     {
-        Vector2 ProjectUp = Vector2.Dot(vectorToTest, GetUpAxis()) * GetUpAxis();
-        return ProjectUp;
+        get
+        {
+            List<Vector2> axis = new List<Vector2>();
+            axis.Add(RightAxis);
+            axis.Add(UpAxis);
+            return axis;
+        }
     }
 
     void Update()
     {
         center.x = transform.position.x;
         center.y = transform.position.y;
+        transform.eulerAngles = new Vector3(0, 0, ZRotation);
     }
 }

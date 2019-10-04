@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public abstract class CollisionHull2D : MonoBehaviour
 {
@@ -104,21 +106,22 @@ public abstract class CollisionHull2D : MonoBehaviour
 
     static protected bool AABBVSOBB(AABBHull AABB, OBBHull OBB)
     {
-        
-        Vector2 AABBMinTransform = OBB.transform.InverseTransformPoint(AABB.min);
-        Vector2 AABBMaxTransform = OBB.transform.InverseTransformPoint(AABB.max);
 
-        Debug.DrawLine(AABBMinTransform, AABBMaxTransform, Color.red);
-        Debug.DrawLine(OBB.min, OBB.max, Color.green);
-        Debug.DrawLine(AABB.center, OBB.center, Color.yellow);
+
+        Vector2 AABBMinTransform = OBB.transform.InverseTransformPoint(AABB.min + AABB.center);
+        Vector2 AABBMaxTransform = OBB.transform.InverseTransformPoint(AABB.max + AABB.center);
+
+        //Debug.DrawLine(AABBMinTransform, AABBMaxTransform, Color.red);
+        //Debug.DrawLine(OBB.min, OBB.max, Color.green);
+        //Debug.DrawLine(AABB.center, OBB.center, Color.yellow);
 
         if (AABB.max.x + AABB.center.x >= OBB.min.x + OBB.center.x && OBB.max.x + OBB.center.x >= AABB.min.x + AABB.center.x)
         {
             if (AABB.max.y + AABB.center.y >= OBB.min.y + OBB.center.y && OBB.max.y + OBB.center.y >= AABB.min.y + AABB.center.y)
             {
-                
-                
 
+
+                
                 /*if (obbMinTransform.x > obbMaxTransform.x && obbMinTransform.y > obbMaxTransform.y)
                 {
                     Vector2 temp = obbMinTransform;
@@ -141,73 +144,53 @@ public abstract class CollisionHull2D : MonoBehaviour
 
     static protected bool OBBVSOBB(OBBHull OBB1, OBBHull OBB2)
     {
-        //top left is min.x, max y
-        //bottom right is max.x, min.y
-        //project onto both axis, get new min and max for both, then aabb test
-        /*Vector2 topLeftOBB1 = new Vector2(OBB1.min.x, OBB1.max.y);
-        Vector2 bottomRightOBB1 = new Vector2(OBB1.max.x, OBB1.min.y);
-        Vector2 topLeftOBB2 = new Vector2(OBB2.min.x, OBB2.max.y);
-        Vector2 bottomRightOBB2 = new Vector2(OBB2.max.x, OBB2.min.y);*/
+        List<Vector2> allAxis = new List<Vector2>();
+        allAxis.AddRange(OBB1.NormalAxis);
+        allAxis.AddRange(OBB2.NormalAxis);
 
-        Vector2 right1 = new Vector2(Mathf.Cos(OBB1.ZRotation), -Mathf.Sin(OBB1.ZRotation));
-        Vector2 up1 = new Vector2(Mathf.Sin(OBB1.ZRotation), Mathf.Cos(OBB1.ZRotation));
-        Vector2 right2 = new Vector2(Mathf.Cos(OBB2.ZRotation), -Mathf.Sin(OBB2.ZRotation));
-        Vector2 up2 = new Vector2(Mathf.Sin(OBB2.ZRotation), Mathf.Cos(OBB2.ZRotation));
-
-        if (OBBTests(right1,OBB1, OBB2))
+        foreach (var axis in allAxis)
         {
-            if (OBBTests(up1,OBB1, OBB2))
+            float OBB1Min = float.MaxValue;
+            float OBB1Max = float.MinValue;
+
+            foreach (var vert in OBB1.Vertices)
             {
-                if(OBBTests(right2, OBB2, OBB1))
+                float dotValue = (vert.x * axis.x + vert.y * axis.y);
+                if (dotValue < OBB1Min)
                 {
-                    if (OBBTests(up2, OBB2, OBB1))
-                    {
-                        return true;
-                    }
+                    OBB1Min = dotValue;
                 }
+                if (dotValue > OBB1Max)
+                {
+                    OBB1Max = dotValue;
+                }
+            }
+
+            float OBB2Min = float.MaxValue;
+            float OBB2Max = float.MinValue;
+            foreach (var vert in OBB2.Vertices)
+            {
+                float dotValue = (vert.x * axis.x + vert.y * axis.y);
+                if (dotValue < OBB2Min)
+                {
+                    OBB2Min = dotValue;
+                }
+                if (dotValue > OBB2Max)
+                {
+                    OBB2Max = dotValue;
+                }
+            }
+
+            if (!(OBB1Max >= OBB2Min && OBB2Max >= OBB1Min))
+            {
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 
-    static private bool OBBTests(Vector2 norm,OBBHull ProjOBB, OBBHull MainOBB)
-    {
-        //top left is min.x, max y
-        //bottom right is max.x, min.y
-
-        Vector2 Max1;
-        Vector2 Min1;
-        Vector2 Max2;
-        Vector2 Min2;
-
-
-        Vector2 p1 = Vector2.Dot(ProjOBB.max, norm) * norm;
-        Vector2 p2 = Vector2.Dot(ProjOBB.min, norm) * norm;
-        Vector2 p3 = Vector2.Dot(new Vector2(ProjOBB.max.x, ProjOBB.min.y), norm) * norm;
-        Vector2 p4 = Vector2.Dot(ProjOBB.min, norm) * norm;
-
-        if (p1.x <= p3.x && p1.y <= p3.y)
-        {
-            p1 = p3;
-        }
-        if (p2.x >= p4.x && p2.y >= p4.y)
-        {
-            p2 = p4;
-        }
-
-        Max1 = p1;
-        Min1 = p2;
-
-        Max2 = Vector2.Dot(MainOBB.max, norm) * norm;
-        Min2 = Vector2.Dot(MainOBB.min, norm) * norm;
-
-        if (Max1.x>= Min2.x && Max1.y >= Min2.y && Max2.x >= Min1.x && Max2.y >= Min1.y)
-        {
-            return true;
-        }
-        return false;
-    }
+  
 
     
 }
