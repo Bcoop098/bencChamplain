@@ -5,18 +5,14 @@ using UnityEngine;
 public abstract class CollisionHull2D : MonoBehaviour
 {
     public CollisionType HullType;
-    static public CollisionInfo info;
-    
+
     public class CollisionInfo
     {
-        
-
         public struct Contact
         {
             Vector2 point;
             Vector2 normal;
             float restitution;
-            float depth;
         }
 
         public CollisionHull2D a;
@@ -25,9 +21,8 @@ public abstract class CollisionHull2D : MonoBehaviour
         public Vector2 closingVelocity;
         bool status;
 
-        public Contact contactData;
-
     }
+
 
     public enum CollisionType
     {
@@ -39,13 +34,13 @@ public abstract class CollisionHull2D : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        info = new CollisionInfo();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     abstract public bool TestCollision(CollisionHull2D other);
@@ -57,33 +52,6 @@ public abstract class CollisionHull2D : MonoBehaviour
 
         if (Vector2.Dot(distance,distance) < totalRadius)
         {
-            info.a = circle1;
-            info.b = circle2;
-            //resolve the circle overlap
-            float angle = Mathf.Atan2((circle2.GetCenter().y - circle1.GetCenter().y), (circle2.GetCenter().x - circle1.GetCenter().x));
-            float distanceBetweenCircles = Mathf.Sqrt((circle2.GetCenter().x - circle1.GetCenter().x) * (circle2.GetCenter().x - circle1.GetCenter().x) + 
-                (circle2.GetCenter().y - (circle1.GetCenter().y) * circle2.GetCenter().y - circle1.GetCenter().y));
-            float distanceToMove = circle1.radius + circle2.radius - distanceBetweenCircles;
-            float circle2X = circle2.GetCenter().x;
-            float circle2Y = circle2.GetCenter().y;
-            circle2X += (float)(Mathf.Cos(angle * Mathf.Rad2Deg) * distanceBetweenCircles);
-            circle2Y += (float)(Mathf.Cos(angle * Mathf.Rad2Deg) * distanceBetweenCircles);
-            circle2.setNewCenter(new Vector2(circle2X, circle2Y));
-            //bounce time
-            Vector2 tangentVector;
-            tangentVector.y = -(circle2.GetCenter().x - circle1.GetCenter().x);
-            tangentVector.x = (circle2.GetCenter().y - circle1.GetCenter().y);
-            tangentVector.Normalize();
-            Vector2 relativeVelocity = new Vector2((circle1.GetComponent<Particle2D>().velocity.x - circle2.GetComponent<Particle2D>().velocity.x), 
-                (circle1.GetComponent<Particle2D>().velocity.y)- (circle2.GetComponent<Particle2D>().velocity.y));
-            float length = Vector2.Dot(relativeVelocity, tangentVector);
-            Vector2 velocityComponentOnTangent;
-            velocityComponentOnTangent = tangentVector * length;
-            Vector2 velocityComponentPerpendicularToTangent = relativeVelocity - velocityComponentOnTangent;
-            //Move one circle
-            circle2.GetComponent<Particle2D>().velocity.x -= 2 * velocityComponentPerpendicularToTangent.x;
-            circle2.GetComponent<Particle2D>().velocity.y -= 2 * velocityComponentPerpendicularToTangent.y;
-
             return true;
         }
         else

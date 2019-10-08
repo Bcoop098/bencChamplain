@@ -30,11 +30,6 @@ public class CircleHull : CollisionHull2D
         return transform.position;
     }
 
-    public void setNewCenter(Vector2 newCenter)
-    {
-        transform.position = newCenter;
-    }
-
 
 
 }
