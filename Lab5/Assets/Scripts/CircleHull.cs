@@ -27,7 +27,7 @@ public class CircleHull : CollisionHull2D
         return false;
     }
 
-    /*private void Start()
+    private void Start()
     {
         center = transform.position;
     }
@@ -35,7 +35,7 @@ public class CircleHull : CollisionHull2D
     private void FixedUpdate()
     {
         center = transform.position;
-    }*/
+    }
 
     public Vector2 GetCenter()
     {

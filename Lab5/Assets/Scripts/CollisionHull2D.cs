@@ -138,13 +138,13 @@ public abstract class CollisionHull2D : MonoBehaviour
 
             Vector2 closest = n;
 
-            float x_extent = (AABB.max.x - AABB.min.x) / 2f;
-            float y_extent = (AABB.max.y -AABB.min.y) / 2f;
+            float x_extent = (AABB.max.x - AABB.min.x + AABB.center.x) * 0.5f;
+            float y_extent = (AABB.max.y - AABB.min.y + AABB.center.y) * 0.5f;
 
             closest.x = Mathf.Clamp(closest.x, -x_extent, x_extent);
             closest.y = Mathf.Clamp(closest.y, -y_extent, y_extent);
             bool inside = false;
-            if (n == closest)
+            if (n.x >= closest.x && n.y >= closest.y)
             {
                 inside = true;
                 if (Mathf.Abs(n.x) > Mathf.Abs(n.y))
@@ -164,12 +164,12 @@ public abstract class CollisionHull2D : MonoBehaviour
             }
 
             contact = n - closest;
-            float d = contact.magnitude * contact.magnitude;
+            float d = contact.magnitude;
             float r = circle.radius;
-            if (d > r && !inside)
+            if ((d * d)> (r * r) && !inside)
                 return false;
 
-            d = Mathf.Sqrt(d);
+            //d = Mathf.Sqrt(d);
             if (inside)
             {
                 contact = -n;
@@ -186,6 +186,10 @@ public abstract class CollisionHull2D : MonoBehaviour
             Vector2 separatingVelocity = (circle.GetComponent<Particle2D>().velocity - AABB.GetComponent<Particle2D>().velocity) * contact;
             float restitution = 1f;
 
+            if (separatingVelocity.x >= 0 && separatingVelocity.y >= 0)
+            {
+                return false;
+            }
             Vector2 newSeparating = -separatingVelocity * restitution;
 
             Vector2 deltaVelocity = newSeparating - separatingVelocity;
@@ -203,13 +207,13 @@ public abstract class CollisionHull2D : MonoBehaviour
 
             Vector2 movePerIMass = contact * (penetration / totalInverseMass);
 
-            Vector2 AABB1Move = movePerIMass * circle.GetComponent<Particle2D>().GetInverseMass();
+            Vector2 CircleMove = movePerIMass * circle.GetComponent<Particle2D>().GetInverseMass();
 
-            Vector2 AABB2Move = movePerIMass * -AABB.GetComponent<Particle2D>().GetInverseMass();
+            Vector2 AABBMove = movePerIMass * -AABB.GetComponent<Particle2D>().GetInverseMass();
 
-            circle.transform.position = circle.transform.position + new Vector3(AABB1Move.x, AABB1Move.y, 0);
+            circle.transform.position = circle.transform.position + new Vector3(CircleMove.x, CircleMove.y, 0);
             //Debug.Log(AABB1.transform.position);
-            AABB.transform.position = AABB.transform.position + new Vector3(AABB2Move.x, AABB2Move.y, 0);
+            AABB.transform.position = AABB.transform.position + new Vector3(AABBMove.x, AABBMove.y, 0);
             return true;
         }
 
