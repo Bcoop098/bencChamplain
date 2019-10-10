@@ -138,8 +138,8 @@ public abstract class CollisionHull2D : MonoBehaviour
 
             Vector2 closest = n;
 
-            float x_extent = (AABB.max.x - AABB.min.x) / 2;
-            float y_extent = (AABB.max.y -AABB.min.y) / 2;
+            float x_extent = (AABB.max.x - AABB.min.x) / 2f;
+            float y_extent = (AABB.max.y -AABB.min.y) / 2f;
 
             closest.x = Mathf.Clamp(closest.x, -x_extent, x_extent);
             closest.y = Mathf.Clamp(closest.y, -y_extent, y_extent);
