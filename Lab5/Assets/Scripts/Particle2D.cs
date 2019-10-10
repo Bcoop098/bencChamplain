@@ -32,8 +32,8 @@ public class Particle2D : MonoBehaviour
     {
         set
         {
-            mass = mass > 0.0f ? mass : 0.0f;
-            inverseMass = mass > 0.0f ? 1.0f / mass : 0.0f;
+            mass = value > 0.0f ? value : 0.0f;
+            inverseMass = value > 0.0f ? 1.0f / value : 0.0f;
         }
 
         get
@@ -88,7 +88,8 @@ public class Particle2D : MonoBehaviour
         Disk,
         Ring,
         Rectangle,
-        Rod
+        Rod,
+        None
     }
 
     // Start is called before the first frame update
@@ -257,4 +258,13 @@ public class Particle2D : MonoBehaviour
         return radius;
     }
 
+    public float GetInverseMass()
+    {
+        return inverseMass;
+    }
+
+    public void SetVelocity(Vector2 newVelocity)
+    {
+        velocity = newVelocity;
+    }
 }

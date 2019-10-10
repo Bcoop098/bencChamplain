@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CircleHull : CollisionHull2D
 {
+    [SerializeField]
+    Vector2 center;
     public float radius;
 
     public override bool TestCollision(CollisionHull2D other)
@@ -24,6 +26,16 @@ public class CircleHull : CollisionHull2D
 
         return false;
     }
+
+    /*private void Start()
+    {
+        center = transform.position;
+    }
+
+    private void FixedUpdate()
+    {
+        center = transform.position;
+    }*/
 
     public Vector2 GetCenter()
     {
