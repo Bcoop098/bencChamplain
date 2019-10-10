@@ -9,8 +9,8 @@ public class OBBHull : CollisionHull2D
     [Range(0f, 360f)]
     public float ZRotation = 0f;
     public Vector2 center = new Vector2(0f, 0f);
-
-    public override bool TestCollision(CollisionHull2D other)
+    public Vector2 halfExtends;
+    public override CollisionInfo TestCollision(CollisionHull2D other)
     {
         switch (other.HullType)
         {
@@ -25,7 +25,7 @@ public class OBBHull : CollisionHull2D
                 break;
         }
 
-        return false;
+        return null;
     }
 
 
@@ -80,6 +80,12 @@ public class OBBHull : CollisionHull2D
         }
     }
 
+
+    private void Start()
+    {
+        center = transform.position;
+        halfExtends = (max - min) / 2f;
+    }
     void Update()
     {
         center.x = transform.position.x;

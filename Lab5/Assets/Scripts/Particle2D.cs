@@ -2,10 +2,10 @@
 
 public class Particle2D : MonoBehaviour
 {
-    private Vector2 position;
+    public Vector2 position;
     private Vector2 localSpace;
     public Vector2 velocity = new Vector2(0, 0);
-    private Vector2 acceleration = new Vector2(0, 0);
+    public Vector2 acceleration = new Vector2(0, 0);
     private float rotation = 0f;
     private float angularVelocity = 0f;
     private float angularAcceleration;
@@ -25,6 +25,7 @@ public class Particle2D : MonoBehaviour
     public float dXdimension;
     public float dYdimension;
     public float rodLength;
+    public float restitution;
 
     Vector2 force;
 

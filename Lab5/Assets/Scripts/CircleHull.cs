@@ -8,7 +8,7 @@ public class CircleHull : CollisionHull2D
     Vector2 center;
     public float radius;
 
-    public override bool TestCollision(CollisionHull2D other)
+    public override CollisionInfo TestCollision(CollisionHull2D other)
     {
         switch (other.HullType)
         {
@@ -16,15 +16,15 @@ public class CircleHull : CollisionHull2D
                 return CollisionHull2D.CircleVSCircle(this, other as CircleHull);
             case CollisionHull2D.CollisionType.AABB:
                 return CollisionHull2D.CircleVSAABB(this, other as AABBHull);
-            case CollisionHull2D.CollisionType.OBB:
-                return CollisionHull2D.CircleVSOBB(this, other as OBBHull);
+            /*case CollisionHull2D.CollisionType.OBB:
+                return CollisionHull2D.CircleVSOBB(this, other as OBBHull);*/
 
 
             default:
                 break;
         }
 
-        return false;
+        return null;
     }
 
     private void Start()
