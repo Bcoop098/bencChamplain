@@ -16,8 +16,8 @@ public class CircleHull : CollisionHull2D
                 return CollisionHull2D.CircleVSCircle(this, other as CircleHull);
             case CollisionHull2D.CollisionType.AABB:
                 return CollisionHull2D.CircleVSAABB(this, other as AABBHull);
-            /*case CollisionHull2D.CollisionType.OBB:
-                return CollisionHull2D.CircleVSOBB(this, other as OBBHull);*/
+            case CollisionHull2D.CollisionType.OBB:
+                return CollisionHull2D.CircleVSOBB(this, other as OBBHull);
 
 
             default:

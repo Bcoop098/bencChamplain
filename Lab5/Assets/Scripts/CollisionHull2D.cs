@@ -182,13 +182,13 @@ public abstract class CollisionHull2D : MonoBehaviour
             if (!(AABBMax < OBBMin && OBBMax < AABBMin))
             {
 
-
+                Vector2 OBBExtend = (OBB.RotMax - OBB.RotMin) / 2f;
                 Vector2 AtoB = OBB.center - AABB.center;
-                float x_overlap = AABB.halfExtends.x + OBB.halfExtends.x - Mathf.Abs(AtoB.x);
+                float x_overlap = AABB.halfExtends.x + OBBExtend.x- Mathf.Abs(AtoB.x);
 
                 if (x_overlap > 0.0f)
                 {
-                    float y_overlap = AABB.halfExtends.y + OBB.halfExtends.y - Mathf.Abs(AtoB.y);
+                    float y_overlap = AABB.halfExtends.y + OBBExtend.y - Mathf.Abs(AtoB.y);
                     if (y_overlap > 0.0f)
                     {
                         if (x_overlap < y_overlap)
@@ -249,7 +249,10 @@ public abstract class CollisionHull2D : MonoBehaviour
             if (!(OBB1Max < OBB2Min && OBB2Max < OBB1Min))
             {
                 Vector2 AtoB = OBB2.center - OBB1.center;
-                float x_overlap = OBB1.halfExtends.x + OBB2.halfExtends.x - Mathf.Abs(AtoB.x);
+
+
+                
+                float x_overlap = OBB1.halfExtends.x + OBB2.halfExtends.x- Mathf.Abs(AtoB.x);
 
                 if (x_overlap > 0.0f)
                 {

@@ -9,8 +9,9 @@ public class OBBHull : CollisionHull2D
     [Range(0f, 360f)]
     public float ZRotation = 0f;
     public Vector2 center = new Vector2(0f, 0f);
-
-    public override bool TestCollision(CollisionHull2D other)
+    public Vector2 halfExtends;
+    public Vector2 rotExtends;
+    public override CollisionInfo TestCollision(CollisionHull2D other)
     {
         switch (other.HullType)
         {
@@ -25,7 +26,7 @@ public class OBBHull : CollisionHull2D
                 break;
         }
 
-        return false;
+        return null;
     }
 
 
@@ -80,10 +81,41 @@ public class OBBHull : CollisionHull2D
         }
     }
 
+
+    private void Start()
+    {
+        center = transform.position;
+        halfExtends = (max - min) / 2f;
+        rotExtends = (RotMax - RotMin) / 2f;
+    }
     void Update()
     {
         center.x = transform.position.x;
         center.y = transform.position.y;
         transform.eulerAngles = new Vector3(0, 0, ZRotation);
+    }
+
+    public Vector2 RotMin 
+    { 
+        get
+        {
+            float[,] rotoMat = new float[,] { { Mathf.Cos(ZRotation * Mathf.Deg2Rad), -Mathf.Sin(ZRotation * Mathf.Deg2Rad) },
+                                              { Mathf.Sin(ZRotation * Mathf.Deg2Rad) , Mathf.Cos(ZRotation * Mathf.Deg2Rad) } };
+
+            return (new Vector2(min.x * rotoMat[0, 0] + min.y * rotoMat[1, 0],
+                                 min.x * rotoMat[0, 1] + min.y * rotoMat[1, 1]) + center);
+        }
+    }
+
+    public Vector2 RotMax
+    {
+        get
+        {
+            float[,] rotoMat = new float[,] { { Mathf.Cos(ZRotation * Mathf.Deg2Rad), -Mathf.Sin(ZRotation * Mathf.Deg2Rad) },
+                                              { Mathf.Sin(ZRotation * Mathf.Deg2Rad) , Mathf.Cos(ZRotation * Mathf.Deg2Rad) } };
+
+            return (new Vector2(max.x * rotoMat[0, 0] + max.y * rotoMat[1, 0],
+                                 max.x * rotoMat[0, 1] + max.y * rotoMat[1, 1]) + center);
+        }
     }
 }

@@ -18,8 +18,8 @@ public class AABBHull : CollisionHull2D
                 return CollisionHull2D.CircleVSAABB(other as CircleHull, this);
             case CollisionHull2D.CollisionType.AABB:
                 return CollisionHull2D.AABBVSAABB(this, other as AABBHull);
-            /*case CollisionHull2D.CollisionType.OBB:
-                return CollisionHull2D.AABBVSOBB(this, other as OBBHull);*/
+            case CollisionHull2D.CollisionType.OBB:
+                return CollisionHull2D.AABBVSOBB(this, other as OBBHull);
 
 
             default:

@@ -2,10 +2,10 @@
 
 public class Particle2D : MonoBehaviour
 {
-    private Vector2 position;
+    public Vector2 position;
     private Vector2 localSpace;
     public Vector2 velocity = new Vector2(0, 0);
-    private Vector2 acceleration = new Vector2(0, 0);
+    public Vector2 acceleration = new Vector2(0, 0);
     private float rotation = 0f;
     private float angularVelocity = 0f;
     private float angularAcceleration;
@@ -25,6 +25,7 @@ public class Particle2D : MonoBehaviour
     public float dXdimension;
     public float dYdimension;
     public float rodLength;
+    public float restitution;
 
     Vector2 force;
 
@@ -32,8 +33,8 @@ public class Particle2D : MonoBehaviour
     {
         set
         {
-            mass = mass > 0.0f ? mass : 0.0f;
-            inverseMass = mass > 0.0f ? 1.0f / mass : 0.0f;
+            mass = value > 0.0f ? value : 0.0f;
+            inverseMass = value > 0.0f ? 1.0f / value : 0.0f;
         }
 
         get
@@ -88,7 +89,8 @@ public class Particle2D : MonoBehaviour
         Disk,
         Ring,
         Rectangle,
-        Rod
+        Rod,
+        None
     }
 
     // Start is called before the first frame update
@@ -257,4 +259,13 @@ public class Particle2D : MonoBehaviour
         return radius;
     }
 
+    public float GetInverseMass()
+    {
+        return inverseMass;
+    }
+
+    public void SetVelocity(Vector2 newVelocity)
+    {
+        velocity = newVelocity;
+    }
 }
