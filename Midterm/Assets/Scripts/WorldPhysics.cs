@@ -26,11 +26,12 @@ public class WorldPhysics : MonoBehaviour
             col.GetComponent<Renderer>().material.color = Color.blue;
         }
 
-        foreach (var col in activeCollisions)
+        for (var i = 0; i < activeCollisions.Count; i++)
         {
-            foreach (var col2 in activeCollisions)
+            var col = activeCollisions[i];
+            for (var g = i + 1; g < activeCollisions.Count; g++)
             {
-                if (col != col2)
+                var col2 = activeCollisions[g];
                 {
                     var collisionInfo = col.GetComponent<CollisionHull2D>().TestCollision(col2.GetComponent<CollisionHull2D>());
                     if (collisionInfo != null)
@@ -50,14 +51,14 @@ public class WorldPhysics : MonoBehaviour
         {
             if (colInfo.RigidBodyA.tag == "Player" && colInfo.RigidBodyB.tag == "Ground")
             {
-                if ((colInfo.RigidBodyA.velocity.x < 0.8f) && (colInfo.RigidBodyA.velocity.y > -1f))
+                if ((Mathf.Abs(colInfo.RigidBodyA.velocity.x) < 1f) && (colInfo.RigidBodyA.velocity.y > -1f))
                 {
                     GameManager.manager.win = true;
                     colInfo.RigidBodyA.velocity = new Vector2(0f, 0f);
                     colInfo.RigidBodyA.acceleration = new Vector2(0f, 0f);
                     //colInfo.RigidBodyA.rotation = 0f;
                 }
-                else if (colInfo.RigidBodyA.velocity.x >= 0.8f || colInfo.RigidBodyA.velocity.y <= -1f)
+                else if ((Mathf.Abs(colInfo.RigidBodyA.velocity.x) >= 1f || colInfo.RigidBodyA.velocity.y <= -1f))
                 {
                     GameManager.manager.lose = true;
                     colInfo.RigidBodyA.velocity = new Vector2(0f, 0f);
@@ -65,8 +66,13 @@ public class WorldPhysics : MonoBehaviour
                     //colInfo.RigidBodyA.rotation = 0f;
                 }
             }
+
             else if (GameManager.manager.win == false && GameManager.manager.lose == false)
             {
+                if (colInfo.RigidBodyA.tag == "Player" && colInfo.RigidBodyB.tag == "Wall")
+                {
+                    colInfo.RigidBodyA.fuel -= 50;
+                }
                 ResolveVelocity(colInfo);
                 ResolvePenetration(colInfo);
             }

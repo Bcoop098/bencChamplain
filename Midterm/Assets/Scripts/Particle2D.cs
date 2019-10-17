@@ -165,7 +165,7 @@ public class Particle2D : MonoBehaviour
                 ApplyTorque(transform.position, ForceGenerator.GenerateForce_Gravity(-2.0f, Vector2.up, mass));
                 //ApplyTorque(new Vector2(transform.position.x + 0.25f,transform.position.y), ForceGenerator.GenerateForce_Gravity(-2.0f, Vector2.up, mass));
             }*/
-            if (transform.eulerAngles.z >= 90.0f && transform.eulerAngles.z < 180f && !(Input.GetAxis("Horizontal") < 0.0f))
+            if (transform.eulerAngles.z >= 90.0f && transform.eulerAngles.z < 180f && !(Input.GetAxis("Horizontal") > 0.0f))
             {
                 transform.eulerAngles = new Vector3(0f, 0f, 90f);
                 StopTorque();
@@ -182,7 +182,7 @@ public class Particle2D : MonoBehaviour
             }
             if (Mathf.Abs(Input.GetAxis("Horizontal")) > 0)
             {
-                ApplyTorque(transform.position, ForceGenerator.GenerateForce_Gravity(2.0f, (Vector2.up * Input.GetAxis("Horizontal")), mass));
+                ApplyTorque(transform.position, ForceGenerator.GenerateForce_Gravity(2.0f, (new Vector2(0,1)* Input.GetAxis("Horizontal"))*-1, mass));
             }
             else
             {

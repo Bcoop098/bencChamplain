@@ -26,11 +26,12 @@ public class WorldPhysics : MonoBehaviour
             col.GetComponent<Renderer>().material.color = Color.blue;
         }
 
-        foreach (var col in activeCollisions)
+        for(var i = 0; i < activeCollisions.Count; i++)
         {
-            foreach (var col2 in activeCollisions)
+            var col = activeCollisions[i];
+            for(var g = i+1; g < activeCollisions.Count; g++)
             {
-                if (col != col2)
+                var col2 = activeCollisions[g];
                 {
                     var collisionInfo = col.GetComponent<CollisionHull2D>().TestCollision(col2.GetComponent<CollisionHull2D>());
                     if (collisionInfo != null)
@@ -61,15 +62,18 @@ public class WorldPhysics : MonoBehaviour
         {
             return;
         }
+        Vector2 accCausedVelocity = collisionInfo.RigidBodyA.previousVelocity - collisionInfo.RigidBodyB.previousVelocity;
+        const float velLimit = 1f;
+        float appliedRestitution = collisionInfo.RelativeVelocity.sqrMagnitude < velLimit * velLimit ? 0.0f : collisionInfo.contacts[0].restitution;
 
-        float newSeparatingVelocity = -separatingVelocity * collisionInfo.contacts[0].restitution;
+        float newSeparatingVelocity = -separatingVelocity * appliedRestitution;
 
-        Vector2 accCausedVelocity = collisionInfo.RigidBodyA.acceleration - collisionInfo.RigidBodyB.acceleration;
+        
 
-        float accCausedSepVelocity = Vector2.Dot(accCausedVelocity,collisionInfo.contacts[0].normal) * Time.fixedDeltaTime;
+        float accCausedSepVelocity = Vector2.Dot(accCausedVelocity, collisionInfo.contacts[0].normal);
         if (accCausedSepVelocity < 0)
         {
-            newSeparatingVelocity += collisionInfo.contacts[0].restitution * accCausedSepVelocity;
+            newSeparatingVelocity += appliedRestitution * accCausedSepVelocity;
             if (newSeparatingVelocity < 0)
                 newSeparatingVelocity = 0;
         }
@@ -102,9 +106,12 @@ public class WorldPhysics : MonoBehaviour
         }
 
         Vector2 movePerMass = collisionInfo.contacts[0].normal * (collisionInfo.contacts[0].penetration / totalInverseMass);
-
+        if (movePerMass.y > 0.0f)
+        {
+            Debug.Log(movePerMass.y);
+        }
         collisionInfo.RigidBodyA.position -= collisionInfo.RigidBodyA.GetInverseMass() * movePerMass;
         collisionInfo.RigidBodyB.position += collisionInfo.RigidBodyB.GetInverseMass() * movePerMass;
-
+        
     }
 }

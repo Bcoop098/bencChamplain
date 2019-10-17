@@ -16,6 +16,7 @@ public class Particle2D : MonoBehaviour
     [Range(0,Mathf.Infinity)]
     public float mass;
     private float inverseMass;
+    public Vector2 previousVelocity = new Vector2(0, 0);
 
     public float radius;
     public float radius2;
@@ -133,6 +134,12 @@ public class Particle2D : MonoBehaviour
 
     private void Update()
     {
+       
+    }
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+
         if (forceType == Forces.TorqueTest)
         {
             ApplyTorque(localSpace, new Vector2(-5, 0));
@@ -185,12 +192,6 @@ public class Particle2D : MonoBehaviour
             ApplyTorque(localSpace, gravity);
 
         }
-    }
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-
-        
 
         //if Euler is selected in the drop down menu, do this
         if (calculationType == Physics.Euler)
@@ -226,14 +227,14 @@ public class Particle2D : MonoBehaviour
     void UpdatePositionEulerExplicit(float deltaTime)
     {
         position += velocity * deltaTime;
-
+        previousVelocity = acceleration * deltaTime;
         velocity += acceleration * deltaTime;
     }
 
     void UpdatePositionKinematic(float deltaTime)
     {
         position += velocity * deltaTime + (acceleration*(deltaTime*deltaTime))*0.5f;
-
+        previousVelocity = acceleration * deltaTime;
         velocity += acceleration * deltaTime;
     }
     void UpdateRotationEulerExplicit(float deltaTime)

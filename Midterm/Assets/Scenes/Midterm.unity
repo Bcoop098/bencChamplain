@@ -405,8 +405,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HullType: 1
-  min: {x: -5.5, y: -25}
-  max: {x: 5.5, y: 25}
+  min: {x: -5.5, y: -40}
+  max: {x: 5.5, y: 40}
   center: {x: 0, y: 0}
   halfExtends: {x: 0, y: 0}
 --- !u!114 &27628577
@@ -492,8 +492,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 27628575}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 45, y: 21.5, z: 0}
-  m_LocalScale: {x: 10, y: 50, z: 1}
+  m_LocalPosition: {x: 45, y: 36.5, z: 0}
+  m_LocalScale: {x: 10, y: 80, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 6
@@ -631,8 +631,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HullType: 1
-  min: {x: -5.5, y: -25}
-  max: {x: 5.5, y: 25}
+  min: {x: -5.5, y: -40}
+  max: {x: 5.5, y: 40}
   center: {x: 0, y: 0}
   halfExtends: {x: 0, y: 0}
 --- !u!114 &168446309
@@ -718,8 +718,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 168446307}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -45, y: 21.5, z: 0}
-  m_LocalScale: {x: 10, y: 50, z: 1}
+  m_LocalPosition: {x: -45, y: 36.5, z: 0}
+  m_LocalScale: {x: 10, y: 80, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
@@ -1856,7 +1856,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1353478656}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 22.38, z: -22.8622}
+  m_LocalPosition: {x: 0, y: 30.8, z: -25.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1879,15 +1879,20 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: -4425495500041998281, guid: 4ae06559d88720b46a357c4eb5af1a55,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: c4a278936c7c82347adf45441799edce, type: 2}
     - target: {fileID: -4216859302048453862, guid: 4ae06559d88720b46a357c4eb5af1a55,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -29.8
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 4ae06559d88720b46a357c4eb5af1a55,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 43.5
+      value: 54.4
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 4ae06559d88720b46a357c4eb5af1a55,
         type: 3}
@@ -1934,6 +1939,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -2684987433343351570, guid: 4ae06559d88720b46a357c4eb5af1a55,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: c4a278936c7c82347adf45441799edce, type: 2}
+    - target: {fileID: -1212445537685685361, guid: 4ae06559d88720b46a357c4eb5af1a55,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: c4a278936c7c82347adf45441799edce, type: 2}
+    - target: {fileID: 3371209440797777657, guid: 4ae06559d88720b46a357c4eb5af1a55,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: c4a278936c7c82347adf45441799edce, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ae06559d88720b46a357c4eb5af1a55, type: 3}
 --- !u!1 &1569687602
@@ -2509,7 +2529,7 @@ MonoBehaviour:
   velocity: {x: 0, y: 0}
   acceleration: {x: 0, y: 0}
   calculationType: 0
-  forceType: 7
+  forceType: 0
   torqueType: 0
   startTime: 0
   mass: 1
@@ -2521,7 +2541,7 @@ MonoBehaviour:
   dXdimension: 0
   dYdimension: 0
   rodLength: 0
-  restitution: 0
+  restitution: 1
 --- !u!114 &2101549326
 MonoBehaviour:
   m_ObjectHideFlags: 0
