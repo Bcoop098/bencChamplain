@@ -16,6 +16,7 @@ public class Particle2D : MonoBehaviour
     [Range(0,Mathf.Infinity)]
     public float mass;
     private float inverseMass;
+    public float fuel = 1000;
 
     public bool isPlayer = false;
 
@@ -142,7 +143,8 @@ public class Particle2D : MonoBehaviour
     {
         if (isPlayer) // only runs for the player
         {
-            if (Input.GetAxis("Vertical") < 0) //down
+            AddForce(ForceGenerator.GenerateForce_Gravity(-0.5f, transform.up, mass));
+            /*if (Input.GetAxis("Vertical") < 0) //down
             {
                 AddForce(ForceGenerator.GenerateForce_Gravity(-2.0f, transform.up, mass));
                 //AddForce(ForceGenerator.GenerateForce_Normal(new Vector2(0, 0.5f), new Vector2(0.0f, -1.0f).normalized));
@@ -154,12 +156,39 @@ public class Particle2D : MonoBehaviour
             }
             else if (Input.GetAxis("Horizontal") > 0) //right
             {
-                ApplyTorque(new Vector2(transform.position.x - 0.25f, transform.position.y), ForceGenerator.GenerateForce_Gravity(2.0f, Vector2.up, mass));
+                ApplyTorque(transform.position, ForceGenerator.GenerateForce_Gravity(2.0f, Vector2.up, mass));
+
+                //ApplyTorque(new Vector2(transform.position.x - 0.25f, transform.position.y), ForceGenerator.GenerateForce_Gravity(2.0f, Vector2.up, mass));
             }
             else if (Input.GetAxis("Horizontal") < 0) //left
             {
-                ApplyTorque(new Vector2(transform.position.x + 0.25f,transform.position.y), ForceGenerator.GenerateForce_Gravity(-2.0f, Vector2.up, mass));
+                ApplyTorque(transform.position, ForceGenerator.GenerateForce_Gravity(-2.0f, Vector2.up, mass));
+                //ApplyTorque(new Vector2(transform.position.x + 0.25f,transform.position.y), ForceGenerator.GenerateForce_Gravity(-2.0f, Vector2.up, mass));
+            }*/
+            if (transform.eulerAngles.z >= 90.0f && transform.eulerAngles.z < 180f && !(Input.GetAxis("Horizontal") < 0.0f))
+            {
+                transform.eulerAngles = new Vector3(0f, 0f, 90f);
+                StopTorque();
             }
+            if (transform.eulerAngles.z <= 270.0f && transform.eulerAngles.z > 180f && !(Input.GetAxis("Horizontal") < 0.0f))
+            {
+                transform.eulerAngles = new Vector3(0f, 0f, 270f);
+                StopTorque();
+            }
+            if (Mathf.Abs(Input.GetAxis("Vertical")) > 0 && fuel > 0)
+            {
+                AddForce(ForceGenerator.GenerateForce_Gravity(2.0f, transform.up * Input.GetAxis("Vertical"), mass));
+                --fuel;
+            }
+            if (Mathf.Abs(Input.GetAxis("Horizontal")) > 0)
+            {
+                ApplyTorque(transform.position, ForceGenerator.GenerateForce_Gravity(2.0f, (Vector2.up * Input.GetAxis("Horizontal")), mass));
+            }
+            else
+            {
+                StopTorque();
+            }
+            
 
         }
         
@@ -188,6 +217,14 @@ public class Particle2D : MonoBehaviour
         }
         UpdateAngularAcceleration();
         UpdateAcceleration();
+    }
+
+    void StopTorque()
+    {
+        torque = 0.0f;
+        angularAcceleration = 0.0f;
+        angularVelocity = 0f;
+
     }
 
     void ApplyTorque(Vector2 locationOfForce, Vector2 appliedForce)
@@ -239,5 +276,10 @@ public class Particle2D : MonoBehaviour
     public void SetVelocity(Vector2 newVelocity)
     {
         velocity = newVelocity;
+    }
+
+    public string GetTag()
+    {
+        return gameObject.tag;
     }
 }
