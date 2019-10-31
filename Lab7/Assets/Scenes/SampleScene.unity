@@ -307,6 +307,7 @@ GameObject:
   - component: {fileID: 1625903968}
   - component: {fileID: 1625903967}
   - component: {fileID: 1625903966}
+  - component: {fileID: 1625903971}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -327,12 +328,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   position: {x: 0, y: 0, z: 0}
-  velocity: {x: 0, y: 1, z: 0}
+  velocity: {x: 0, y: 0, z: 0}
   acceleration: {x: 0, y: 0, z: 0}
   rotation: {x: 0, y: 0, z: 0, w: 0}
-  angularVelocity: {x: 0.5, y: 1, z: 2}
-  angularAcceleration: {x: 0, y: 0.2, z: 0}
+  angularVelocity: {x: 0, y: 0, z: 0}
+  angularAcceleration: {x: 0, y: 0, z: 0}
   calculationType: 0
+  shapeType: 2
+  centerOfMassLocalSpace: {x: 0, y: 0, z: 0}
 --- !u!65 &1625903967
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -406,3 +409,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1625903971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1625903965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b548710af3efd9d48aeda1b428c6e2f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 0
+  mass: 1
+  width: 1
+  height: 1
+  depth: 1
