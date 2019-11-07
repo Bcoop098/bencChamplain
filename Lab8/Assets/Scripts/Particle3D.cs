@@ -41,11 +41,14 @@ public class Particle3D : MonoBehaviour
     public Vector3 forceLocation;
     public Vector3 forceAmount;
 
+    public float restitution;
+
     //drop down menu
     public enum Physics
     {
         Kinematic,
-        Euler
+        Euler,
+        None
     }
 
     public enum Shape
@@ -55,7 +58,8 @@ public class Particle3D : MonoBehaviour
         SolidBox,
         HollowBox,
         SolidCylinder,
-        SolidCone
+        SolidCone,
+        None
     }
 
     // Start is called before the first frame update
@@ -139,7 +143,7 @@ public class Particle3D : MonoBehaviour
 
         updateAngularAcceleration();
         UpdateAcceleration();
-        transform.SetPositionAndRotation(position, rotation);
+        //transform.SetPositionAndRotation(position, rotation);
         centerOfMassWorldSpace = objectToWorldTransform.MultiplyPoint(centerOfMassLocalSpace);
 
     }
@@ -222,6 +226,15 @@ public class Particle3D : MonoBehaviour
         force = Vector3.zero;
     }
 
+    public Matrix4x4 getObjectToWorld()
+    {
+        //return objectToWorldTransform; used with forces
+        return transform.localToWorldMatrix;
+    }
+    public Matrix4x4 getWorldToObject()
+    {
+        return transform.worldToLocalMatrix;
+        //return worldToObjectTransform;used with forces
+    }
 
-    
 }
