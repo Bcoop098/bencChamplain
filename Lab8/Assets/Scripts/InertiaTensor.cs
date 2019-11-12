@@ -8,6 +8,7 @@ public class InertiaTensor : MonoBehaviour
 
     public float radius;
 
+    [Range(0, Mathf.Infinity)]
     public float mass;
 
     public float width;

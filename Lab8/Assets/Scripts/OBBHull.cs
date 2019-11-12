@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class OBBHull : CollisionHull3D
 {
-    public Vector3 min = new Vector2(0f, 0f);
-    public Vector3 max = new Vector2(0f, 0f);
+    public Vector3 min = new Vector3(0f, 0f, 0f);
+    public Vector3 max = new Vector3(0f, 0f, 0f);
     [Range(0f, 360f)]
     public float ZRotation = 0f;
-    public Vector3 center = new Vector2(0f, 0f);
+    public Vector3 center = new Vector3(0f, 0f, 0f);
     public Vector3 halfExtends;
     public Vector3 rotExtends;
     public override CollisionInfo TestCollision(CollisionHull3D other)
@@ -39,6 +39,7 @@ public class OBBHull : CollisionHull3D
     {
         center.x = transform.position.x;
         center.y = transform.position.y;
+        center.z = transform.position.z;
         transform.eulerAngles = new Vector3(0, 0, ZRotation);
     }
 

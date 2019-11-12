@@ -143,7 +143,7 @@ public class Particle3D : MonoBehaviour
 
         updateAngularAcceleration();
         UpdateAcceleration();
-        //transform.SetPositionAndRotation(position, rotation);
+        transform.SetPositionAndRotation(position, rotation);
         centerOfMassWorldSpace = objectToWorldTransform.MultiplyPoint(centerOfMassLocalSpace);
 
     }
@@ -237,4 +237,9 @@ public class Particle3D : MonoBehaviour
         //return worldToObjectTransform;used with forces
     }
 
+
+    public float GetInverseMass()
+    {
+        return inverseMass;
+    }
 }

@@ -39,6 +39,7 @@ public class AABBHull : CollisionHull3D
     {
         center.x = transform.position.x;
         center.y = transform.position.y;
+        center.z = transform.position.z;
         transform.eulerAngles = new Vector3(0, 0, ZRotation);
     }
     
