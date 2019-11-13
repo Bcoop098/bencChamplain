@@ -223,7 +223,7 @@ public abstract class CollisionHull3D : MonoBehaviour
             {
                 bestOverlap = overlap;
                 bestCase = i;
-                bestAxis = allAxis[bestCase];
+                //bestAxis = allAxis[bestCase];
             }
         }
         if (bestCase < 3)
@@ -236,7 +236,7 @@ public abstract class CollisionHull3D : MonoBehaviour
         }
         else
         {
-            return new CollisionInfo(box1, box2, bestAxis, bestOverlap);
+            return new CollisionInfo(box1, box2, allAxis[bestCase], bestOverlap);
         }
 
         
