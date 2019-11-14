@@ -1,0 +1,6 @@
+﻿  PhysicsPlugin.cpp
+  PhysicsWorld.cpp
+  Generating Code...
+     Creating library C:\Users\Student\source\repos\UnityDLL\Debug\UnityDLL.lib and object C:\Users\Student\source\repos\UnityDLL\Debug\UnityDLL.exp
+MSVCRTD.lib(exe_main.obj) : error LNK2019: unresolved external symbol _main referenced in function "int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ)
+C:\Users\Student\source\repos\UnityDLL\Debug\UnityDLL.exe : fatal error LNK1120: 1 unresolved externals
