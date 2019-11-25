@@ -8,6 +8,7 @@ PhysicsWorld* PhysicsWorldInstance = nullptr;
 	{
 		PhysicsWorldInstance = new PhysicsWorld;
 	}
+	PhysicsWorldInstance->reset();
 }
 
  void DestroyPhysicsWorld()
@@ -26,3 +27,19 @@ PhysicsWorld* PhysicsWorldInstance = nullptr;
 		PhysicsWorldInstance->Update(deltaTime);
 	}
 }
+
+ void AddParticle3D(float& mass, float& xPos, float& yPos, float& zPos)
+ {
+	 if (PhysicsWorldInstance != nullptr)
+	 {
+		 PhysicsWorldInstance->AddParticle3D(mass, xPos, yPos, zPos);
+	 }
+ }
+
+ void AddForce(float xForce, float yForce, float zForce)
+ {
+	 if (PhysicsWorldInstance != nullptr)
+	 {
+		 PhysicsWorldInstance->applyForce(xForce, yForce, zForce);
+	 }
+ }

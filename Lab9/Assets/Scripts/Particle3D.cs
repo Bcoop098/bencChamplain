@@ -1,13 +1,18 @@
 ﻿using UnityEngine;
+using Unity.Jobs;
+using Unity.Collections;
+using Unity.Entities;
 
 public class Particle3D : MonoBehaviour
 {
 
+    
+
     private Vector2 localSpace;
 
     public Vector3 position;
-    public Vector3 velocity = new Vector3(0, 0,0);
-    public Vector3 acceleration = new Vector3(0, 0,0);
+    public Vector3 velocity; //= new Vector3(0, 0,0);
+    public Vector3 acceleration;// = new Vector3(0, 0,0);
 
 
     public Quaternion rotation;
@@ -90,7 +95,7 @@ public class Particle3D : MonoBehaviour
             invInertiaLocalSpace = InertiaTensor.tensor.SolidCone().inverse;
         }
 
-        inverseMass = 1f / InertiaTensor.tensor.getMass();
+        //inverseMass = 1f / InertiaTensor.tensor.getMass();
 
         invInertiaWorldSpace = Matrix4x4.zero;
         centerOfMassWorldSpace = Vector3.zero;
@@ -113,9 +118,6 @@ public class Particle3D : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-
-        
-        //UpdateRotationKinematic(Time.fixedDeltaTime);
         
 
         if (calculationType == Physics.Euler)
@@ -134,17 +136,16 @@ public class Particle3D : MonoBehaviour
             UpdateRotationKinematic(Time.fixedDeltaTime);
             //transform.rotation = rotation; //set the new rotation
         }
-
         objectToWorldTransform = Matrix4x4.TRS(position, rotation, Vector3.one);
         worldToObjectTransform = objectToWorldTransform.transpose;
 
         //Useful for bonus
-        invInertiaWorldSpace = objectToWorldTransform * invInertiaLocalSpace * worldToObjectTransform;
+        //invInertiaWorldSpace = objectToWorldTransform * invInertiaLocalSpace * worldToObjectTransform;
 
         updateAngularAcceleration();
         UpdateAcceleration();
         //transform.SetPositionAndRotation(position, rotation);
-        centerOfMassWorldSpace = objectToWorldTransform.MultiplyPoint(centerOfMassLocalSpace);
+        //centerOfMassWorldSpace = objectToWorldTransform.MultiplyPoint(centerOfMassLocalSpace);
 
     }
     
