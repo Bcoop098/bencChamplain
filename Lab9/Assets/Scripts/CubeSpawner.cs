@@ -19,10 +19,7 @@ public struct ParticleData : IComponentData
 public class CubeSpawner : ComponentSystem
 {
     protected override void OnUpdate()
-
-
     {
-
         Entities.ForEach((Entity entity, ref cubeSpawnerData spawnerData) =>
         {
             for (int x = 0; x < spawnerData.NumXCubes; ++x)

@@ -26,10 +26,6 @@ public struct cubeSpawnerData : IComponentData
 [RequiresEntityConversion]
 public class Manager : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
-
-
-    
-
     public GameObject cube;
 
     public Vector3 acceleration;
@@ -50,26 +46,6 @@ public class Manager : MonoBehaviour, IConvertGameObjectToEntity, IDeclareRefere
     // Start is called before the first frame update
     void Start()
     {
-
-      /*  for (int x = 0; x < NumXCubes; ++x)
-        {
-            float posX = x - (NumXCubes / 2);
-
-            for (int z = 0; z < NumZCubes; ++z)
-            {
-                float posZ = z - (NumZCubes / 2);
-
-                var obj = Instantiate(cube);
-                obj.GetComponent<BaseParticle>().acceleration = acceleration;
-                obj.GetComponent<BaseParticle>().velocity = velocity;
-                obj.GetComponent<BaseParticle>().angularVelocity = angularVelocity;
-                obj.GetComponent<BaseParticle>().angularAcceleration = angularAcceleration;
-                obj.GetComponent<BaseParticle>().rotation = rotation;
-                var transform = obj.GetComponent<Transform>();
-                transform.position = new Vector3(posX, 0.0f, posZ);
-                
-            }
-        }*/
     }
 
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
