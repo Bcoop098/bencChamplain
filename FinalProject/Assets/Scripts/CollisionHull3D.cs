@@ -20,7 +20,7 @@ public abstract class CollisionHull3D : MonoBehaviour
             public float penetration;
         }
 
-        public CollisionInfo(CollisionHull3D shapeA, CollisionHull3D shapeB, Vector3 normal, float penetration, Vector3 point)
+        public CollisionInfo(CollisionHull3D shapeA, CollisionHull3D shapeB, Vector3 normal, float penetration)
         {
             RigidBodyA = shapeA.GetComponent<Particle3D>();
             ShapeA = shapeA;
@@ -33,7 +33,6 @@ public abstract class CollisionHull3D : MonoBehaviour
             contacts[0].normal = normal;
             contacts[0].penetration = penetration;
             contacts[0].restitution = Mathf.Min(RigidBodyA.restitution, RigidBodyB.restitution);
-            contacts[0].point = point;
         }
 
         public Particle3D RigidBodyA { get; }
@@ -77,7 +76,7 @@ public abstract class CollisionHull3D : MonoBehaviour
             return null;
         }
         float distance = Mathf.Sqrt(distanceSQ);
-        return new CollisionInfo(circle1, circle2, centerDiff / distance, radiusSum - distance,(circle1.GetCenter() + centerDiff * 0.5f));
+        return new CollisionInfo(circle1, circle2, centerDiff / distance, radiusSum - distance);
     }
 
     static protected CollisionInfo CircleVSAABB(CircleHull circle, AABBHull AABB)
@@ -94,7 +93,7 @@ public abstract class CollisionHull3D : MonoBehaviour
             return null;
         }
         float distance = Mathf.Sqrt(distanceSQ);
-        return new CollisionInfo(circle, AABB, -distanceVec.normalized, circle.radius - distance, circleBox);
+        return new CollisionInfo(circle, AABB, -distanceVec.normalized, circle.radius - distance);
 
 
     }
@@ -113,31 +112,9 @@ public abstract class CollisionHull3D : MonoBehaviour
         {
             return null;
         }
-        Vector3 closestPt = new Vector3(0f,0f,0f);
-        float dist;
-        // Clamp each coordinate to the box.
-        dist = circleInOBB.x;
-        if (dist > OBB.halfExtends.x) dist = OBB.halfExtends.x;
-        if (dist < -OBB.halfExtends.x) dist = -OBB.halfExtends.x;
-        closestPt.x = dist;
-        dist = circleInOBB.y;
-        if (dist > OBB.halfExtends.y) dist = OBB.halfExtends.y;
-        if (dist < -OBB.halfExtends.y) dist = -OBB.halfExtends.y;
-        closestPt.y = dist;
-        dist = circleInOBB.z;
-        if (dist > OBB.halfExtends.z) dist = OBB.halfExtends.z;
-        if (dist < -OBB.halfExtends.z) dist = -OBB.halfExtends.z;
-        closestPt.z = dist;
-        // Check to see if we’re in contact.
-        dist = (closestPt - circleInOBB).sqrMagnitude;
-        if (dist > circle.radius * circle.radius)
-            return null;
-        // Compile the contact.
-        Vector3 closestPtWorld = OBB.GetComponent<Particle3D>().getObjectToWorld().MultiplyPoint(closestPt);
         //place contact point in world space
         float distance = Mathf.Sqrt(distanceSQ);
-        //Debug.LogError(closestPtWorld);
-        return new CollisionInfo(circle, OBB, (-distanceVec).normalized, (circle.radius - distance),closestPtWorld);
+        return new CollisionInfo(circle, OBB, (-distanceVec).normalized, (circle.radius - distance));
         //OBB.GetComponent<Particle3D>().getObjectToWorld().MultiplyPoint(-distanceVec).normalized this failed to work, removing it fixed it
     }
 
@@ -159,17 +136,15 @@ public abstract class CollisionHull3D : MonoBehaviour
                         float minOverlap = Mathf.Min(x_overlap, y_overlap, z_overlap);
                         if (minOverlap == x_overlap)
                         {
-                            return new CollisionInfo(AABB1, AABB2, AtoB.x < 0.0f ? -Vector3.right : Vector3.right, x_overlap, AABB1.center + AtoB / 2);
+                            return new CollisionInfo(AABB1, AABB2, AtoB.x < 0.0f ? -Vector3.right : Vector3.right, x_overlap);
                         }
                         else if(minOverlap == y_overlap)
                         {
-                            Debug.Log(AtoB / 2f);
-                            return new CollisionInfo(AABB1, AABB2, AtoB.y < 0.0f ? -Vector3.up : Vector3.up, y_overlap, AABB1.center + AtoB / 2);
+                            return new CollisionInfo(AABB1, AABB2, AtoB.y < 0.0f ? -Vector3.up : Vector3.up, y_overlap);
                         }
                         else if(minOverlap == z_overlap)
                         {
-                            Debug.Log(AtoB / 2f);
-                            return new CollisionInfo(AABB1, AABB2, AtoB.y < 0.0f ? -Vector3.forward : Vector3.forward, z_overlap, AABB1.center + AtoB / 2);
+                            return new CollisionInfo(AABB1, AABB2, AtoB.y < 0.0f ? -Vector3.forward : Vector3.forward, z_overlap);
                         }
                     }
                 }
@@ -248,34 +223,26 @@ public abstract class CollisionHull3D : MonoBehaviour
             {
                 bestOverlap = overlap;
                 bestCase = i;
-                //bestAxis = allAxis[bestCase];
+                bestAxis = allAxis[bestCase];
             }
         }
         if (bestCase < 3)
         {
-            return resolveVertexFaceBox(box1, box2, toCenter, bestCase, bestOverlap, box2HalfExtends);
+            return resolveVertexFaceBox(box1, box2, toCenter, bestCase, bestOverlap);
         }
         else if (bestCase < 6)
         {
-            return resolveVertexFaceBox(box2, box1, toCenter * -1.0f, bestCase - 3, bestOverlap, box1HalfExtends);
+            return resolveVertexFaceBox(box2, box1, toCenter * -1.0f, bestCase - 3, bestOverlap);
         }
         else
         {
-            int oneAxisIndex = bestCase / 3;
-            int twoAxixIndex = bestCase % 3;
-
-            Vector3 oneAxis = box1.GetComponent<Particle3D>().getObjectToWorld().GetColumn(oneAxisIndex);
-            Vector3 twoAxis = box2.GetComponent<Particle3D>().getObjectToWorld().GetColumn(twoAxixIndex);
-            Vector3 axis2 = Vector3.Cross(oneAxis, twoAxis);
-            axis2.Normalize();
-
-            return new CollisionInfo(box1, box2, allAxis[bestCase], bestOverlap, Vector3.one);
+            return new CollisionInfo(box1, box2, bestAxis, bestOverlap);
         }
 
         
     }
 
-    static private CollisionInfo resolveVertexFaceBox(CollisionHull3D box1, CollisionHull3D box2, Vector3 toCenter, int bestCase, float bestOverlap, Vector3 halfExtends)
+    static private CollisionInfo resolveVertexFaceBox(CollisionHull3D box1, CollisionHull3D box2, Vector3 toCenter, int bestCase, float bestOverlap)
     {
         Vector3 normal = box1.GetComponent<Particle3D>().getObjectToWorld().GetColumn(bestCase);
         Vector4 tempCenter = new Vector4(toCenter.x,toCenter.y,toCenter.z);
@@ -283,21 +250,6 @@ public abstract class CollisionHull3D : MonoBehaviour
         {
             normal = normal * -1.0f;
         }
-        Vector3 vertex = halfExtends;
-        if (Vector4.Dot(box2.GetComponent<Particle3D>().getObjectToWorld().GetColumn(0), normal) < 0)
-        {
-            vertex.x = -vertex.x;
-        }
-        if (Vector4.Dot(box2.GetComponent<Particle3D>().getObjectToWorld().GetColumn(1), normal) < 0)
-        {
-            vertex.y = -vertex.y;
-        }
-        if (Vector4.Dot(box2.GetComponent<Particle3D>().getObjectToWorld().GetColumn(2), normal) < 0)
-        {
-            vertex.z = -vertex.z;
-        }
-        Debug.Log(vertex);
-        Vector3 vertexPoint = box1.GetComponent<Particle3D>().getObjectToWorld().MultiplyPoint(vertex);
-        return new CollisionInfo(box1, box2, normal, bestOverlap, vertexPoint);
+        return new CollisionInfo(box1, box2, normal, bestOverlap);
     }
 }

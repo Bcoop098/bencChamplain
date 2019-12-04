@@ -1,7 +1,11 @@
 ﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 public class Particle3D : MonoBehaviour
 {
+    public bool isCannonBall;
+    public float timeToDisable;
 
     private Vector2 localSpace;
 
@@ -20,6 +24,7 @@ public class Particle3D : MonoBehaviour
     //Force
     private Vector3 force;
 
+    public float mass;
 
     //Inertia
     private Matrix4x4 invInertiaLocalSpace;
@@ -36,12 +41,16 @@ public class Particle3D : MonoBehaviour
     //Torque
     private Vector3 torque;
 
-    private float inverseMass;
+    public float inverseMass;
 
     public Vector3 forceLocation;
     public Vector3 forceAmount;
 
     public float restitution;
+
+    public float gravity = -10f;
+
+    public bool hasHit = false;
 
     //drop down menu
     public enum Physics
@@ -65,6 +74,11 @@ public class Particle3D : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if(isCannonBall)
+        {
+            StartCoroutine(Disable(timeToDisable));
+        }
+        WorldPhysics.Instance.addToList(gameObject);
         if (shapeType == Shape.SolidSphere)
         {
             invInertiaLocalSpace = InertiaTensor.tensor.SolidSphere().inverse;
@@ -90,7 +104,14 @@ public class Particle3D : MonoBehaviour
             invInertiaLocalSpace = InertiaTensor.tensor.SolidCone().inverse;
         }
 
-        inverseMass = 1f / InertiaTensor.tensor.getMass();
+        if (mass == 0)
+        {
+            inverseMass = 0.0f;
+        }
+        else
+        {
+            inverseMass = 1f /mass;
+        }
 
         invInertiaWorldSpace = Matrix4x4.zero;
         centerOfMassWorldSpace = Vector3.zero;
@@ -108,7 +129,13 @@ public class Particle3D : MonoBehaviour
 
     private void Update()
     {
-        ApplyForce(forceLocation, forceAmount);
+        if (!hasHit)
+        {
+            ApplyForce(forceLocation, forceAmount);
+        }
+        else
+            ApplyForce(forceLocation, -forceAmount);
+        ApplyForce(position,generateGravityForce(gravity, Vector3.up, mass));
     }
     // Update is called once per frame
     void FixedUpdate()
@@ -241,5 +268,29 @@ public class Particle3D : MonoBehaviour
     public float GetInverseMass()
     {
         return inverseMass;
+    }
+
+    public Vector3 generateGravityForce(float gravityConst, Vector3 worldUp, float particleMass)
+    {
+        Vector3 gravityVal = worldUp * gravityConst * particleMass;
+        return gravityVal;
+    }
+
+    public void resetAngularValues()
+    {
+        angularAcceleration = Vector3.zero;
+        angularVelocity = Vector3.zero;
+    }
+    public void RemoveObject()
+    {
+        gameObject.SetActive(false);
+        WorldPhysics.Instance.removeFromList(gameObject);
+    }
+
+    private IEnumerator Disable(float time)
+    {
+        yield return new WaitForSeconds(time);
+        gameObject.SetActive(false);
+        WorldPhysics.Instance.removeFromList(gameObject);
     }
 }
