@@ -51,6 +51,40 @@ public class WorldPhysics : MonoBehaviour
             ResolvePenetration(colInfo);
         }
         allCollisionInfo.Clear();
+
+        /*
+         * foreach (var colInfo in allCollisionInfo)
+        {
+            if (colInfo.RigidBodyA.tag == "Player" && colInfo.RigidBodyB.tag == "Ground")
+            {
+                if ((Mathf.Abs(colInfo.RigidBodyA.velocity.x) < 1f) && (colInfo.RigidBodyA.velocity.y > -1f))
+                {
+                    GameManager.manager.win = true;
+                    colInfo.RigidBodyA.velocity = new Vector2(0f, 0f);
+                    colInfo.RigidBodyA.acceleration = new Vector2(0f, 0f);
+                    //colInfo.RigidBodyA.rotation = 0f;
+                }
+                else if ((Mathf.Abs(colInfo.RigidBodyA.velocity.x) >= 1f || colInfo.RigidBodyA.velocity.y <= -1f))
+                {
+                    GameManager.manager.lose = true;
+                    colInfo.RigidBodyA.velocity = new Vector2(0f, 0f);
+                    colInfo.RigidBodyA.acceleration = new Vector2(0f, 0f);
+                    //colInfo.RigidBodyA.rotation = 0f;
+                }
+            }
+
+            else if (GameManager.manager.win == false && GameManager.manager.lose == false)
+            {
+                if (colInfo.RigidBodyA.tag == "Player" && colInfo.RigidBodyB.tag == "Wall")
+                {
+                    colInfo.RigidBodyA.fuel -= 50;
+                }
+                ResolveVelocity(colInfo);
+                ResolvePenetration(colInfo);
+            }
+        }
+        allCollisionInfo.Clear();
+         */
     }
 
     void ResolveVelocity(CollisionHull3D.CollisionInfo collisionInfo)

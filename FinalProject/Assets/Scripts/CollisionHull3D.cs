@@ -267,7 +267,7 @@ public abstract class CollisionHull3D : MonoBehaviour
             Vector3 oneAxis = box1.GetComponent<Particle3D>().getObjectToWorld().GetColumn(oneAxisIndex);
             Vector3 twoAxis = box2.GetComponent<Particle3D>().getObjectToWorld().GetColumn(twoAxixIndex);
             Vector3 axis2 = Vector3.Cross(oneAxis, twoAxis);
-            axis2.Normalize
+            axis2.Normalize();
 
             return new CollisionInfo(box1, box2, allAxis[bestCase], bestOverlap, Vector3.one);
         }
