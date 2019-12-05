@@ -7,6 +7,9 @@ public class WorldPhysics : MonoBehaviour
 {
     public static WorldPhysics Instance;// = new WorldPhysics();
 
+    [SerializeField]
+    GameObject Cannon;
+
     public List<GameObject> activeCollisions;
 
     private List<CollisionHull3D.CollisionInfo> allCollisionInfo = new List<CollisionHull3D.CollisionInfo>();
@@ -64,13 +67,28 @@ public class WorldPhysics : MonoBehaviour
     {
         foreach (var colInfo in allCollisionInfo)
         {
-            colInfo.RigidBodyA.hasHit = true;
-            colInfo.RigidBodyB.hasHit = true;
-            colInfo.RigidBodyA.resetAngularValues();
-            colInfo.RigidBodyB.resetAngularValues();
             if (colInfo.RigidBodyA.tag == "CannonBall" && colInfo.RigidBodyB.tag == "OuterWall")
             {
                 colInfo.RigidBodyB.RemoveObject();
+                colInfo.RigidBodyA.resetAngularValues();
+                colInfo.RigidBodyB.resetAngularValues();
+                colInfo.RigidBodyA.hasHit = true;
+                colInfo.RigidBodyB.hasHit = true;
+            }
+            else if (colInfo.RigidBodyA.tag == "CannonBall" && colInfo.RigidBodyB.tag == "Ground")
+            {
+                colInfo.RigidBodyA.resetAngularValues();
+                colInfo.RigidBodyB.resetAngularValues();
+                colInfo.RigidBodyA.hasHit = true;
+                colInfo.RigidBodyB.hasHit = true;
+                colInfo.RigidBodyA.addFriction();
+            }
+            else if (colInfo.RigidBodyA.tag == "CannonBall" && colInfo.RigidBodyB.tag == "PowerUp")
+            {
+                colInfo.RigidBodyB.RemoveObject();
+                //colInfo.RigidBodyB.resetAngularValues();
+                //colInfo.RigidBodyB.hasHit = true;
+                Cannon.GetComponent<CannonMove>().addAmmo();
             }
             ResolveVelocity(colInfo);
             ResolvePenetration(colInfo);

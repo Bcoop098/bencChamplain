@@ -81,7 +81,7 @@ public class Particle2D : MonoBehaviour
 
         else if (forceType == Forces.NormalForce)
         {
-            AddForce(ForceGenerator.GenerateForce_Normal(ForceGenerator.GenerateForce_Gravity(-10.0f, Vector2.up, mass), new Vector2 (1.0f,0.0f).normalized));
+            AddForce(ForceGenerator.GenerateForce_Normal(ForceGenerator.GenerateForce_Gravity(-10.0f, Vector2.up, mass), new Vector2 (5.0f,0.0f).normalized));
         }
 
         else if (forceType == Forces.SlidingForce)

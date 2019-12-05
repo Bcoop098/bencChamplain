@@ -151,8 +151,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cube: {fileID: 2347207569404840791, guid: 5acfefc1371b2fe41a44eb3da4454b8b, type: 3}
-  acceleration: {x: 2, y: 0, z: 0}
-  velocity: {x: 2, y: 0, z: 0}
+  acceleration: {x: 0, y: 0, z: 0}
+  velocity: {x: 0, y: 0, z: 0}
   angularAcceleration: {x: 20, y: 20, z: 0}
   angularVelocity: {x: 10, y: 8, z: 0}
   rotation: {x: 0, y: 0, z: 0, w: 0}

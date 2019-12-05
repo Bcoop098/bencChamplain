@@ -61,4 +61,9 @@ public class CannonMove : MonoBehaviour
     {
         return ammoCount;
     }
+
+    public void addAmmo()
+    {
+        ammoCount++;
+    }
 }

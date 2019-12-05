@@ -6,6 +6,9 @@ public class Particle3D : MonoBehaviour
 {
     public bool isCannonBall;
     public float timeToDisable;
+    public bool onGround;
+
+    public bool powerUp;
 
     private Vector2 localSpace;
 
@@ -74,6 +77,7 @@ public class Particle3D : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        onGround = false;
         if(isCannonBall)
         {
             StartCoroutine(Disable(timeToDisable));
@@ -120,30 +124,50 @@ public class Particle3D : MonoBehaviour
         acceleration = Vector3.zero;
         objectToWorldTransform = Matrix4x4.zero;
         worldToObjectTransform = Matrix4x4.zero;
+        //angularVelocity = new Vector3(5, 0, 0);
+
 
         position = transform.position;
 
+        if (isCannonBall)
+        {
+            ApplyForce(Vector3.down, new Vector3(0, 200, 0));
+        }
+        
         
        
     }
 
     private void Update()
     {
-        if (!hasHit)
-        {
-            ApplyForce(forceLocation, forceAmount);
-        }
-        else
-            ApplyForce(forceLocation, -forceAmount);
-        ApplyForce(position,generateGravityForce(gravity, Vector3.up, mass));
+        
     }
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (isCannonBall && !onGround)
+        {
+            Vector3 dragLocation = new Vector3(position.x + 2, position.y, position.z);
+            float cannonBallArea = Mathf.PI * (InertiaTensor.tensor.radius * InertiaTensor.tensor.radius);
+            //ApplyForce(dragLocation,(generateDrag(velocity, new Vector3(1, 1, 1), 2.5f, cannonBallArea, 5f)));
+            ApplyForce(dragLocation, newDrag());
+        }
+        if (!hasHit)
+        {
+            ApplyForce(forceLocation, forceAmount);
+        }
+        else if(hasHit && !onGround)
+            ApplyForce(forceLocation, -forceAmount);
+        ApplyForce(position, generateGravityForce(gravity, Vector3.up, mass));
 
-        
+        if (onGround )
+        {
+            Vector3 inFront = new Vector3(position.x +5, position.y, position.z);
+            ApplyForce(inFront, generateFriction(Vector3.up, velocity*2, 3f));
+        }
+
         //UpdateRotationKinematic(Time.fixedDeltaTime);
-        
+
 
         if (calculationType == Physics.Euler)
         {
@@ -199,8 +223,9 @@ public class Particle3D : MonoBehaviour
         rotation = new Quaternion((rotation.x + angularTimesRotation.x), (rotation.y + angularTimesRotation.y), 
                                  (rotation.z + angularTimesRotation.z), (rotation.w + angularTimesRotation.w)).normalized;
 
+        if(!powerUp)
+            angularVelocity = angularAcceleration * deltaTime;
 
-        angularVelocity = angularAcceleration * deltaTime;
     }
     void UpdateRotationKinematic(float deltaTime)
     {
@@ -274,6 +299,27 @@ public class Particle3D : MonoBehaviour
     {
         Vector3 gravityVal = worldUp * gravityConst * particleMass;
         return gravityVal;
+    }
+
+    public Vector3 generateFriction(Vector3 normal, Vector3 velocity, float coefficientKinetic)
+    {
+        Vector3 kinetic = -coefficientKinetic * normal.magnitude * velocity.normalized;
+        return kinetic;
+    }
+
+    public Vector3 newDrag()
+    {
+        Vector3 force = velocity;
+        float dragCoeff = force.magnitude;
+        dragCoeff = 0.2f * dragCoeff + 0.15f * (dragCoeff * dragCoeff);
+        force.Normalize();
+        force *= -dragCoeff;
+        return force;
+    }
+
+    public void addFriction()
+    {
+        onGround = true;
     }
 
     public void resetAngularValues()
