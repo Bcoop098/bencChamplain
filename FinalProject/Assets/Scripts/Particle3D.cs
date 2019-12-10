@@ -80,7 +80,7 @@ public class Particle3D : MonoBehaviour
         onGround = false;
         if(isCannonBall)
         {
-            StartCoroutine(Disable(timeToDisable));
+            //StartCoroutine(Disable(timeToDisable));
         }
         WorldPhysics.Instance.addToList(gameObject);
         if (shapeType == Shape.SolidSphere)
@@ -329,6 +329,11 @@ public class Particle3D : MonoBehaviour
     }
     public void RemoveObject()
     {
+        
+        if (!isCannonBall && !powerUp)
+        {
+            GameManager.manager.removeCastlePart(gameObject);
+        }
         gameObject.SetActive(false);
         WorldPhysics.Instance.removeFromList(gameObject);
     }
@@ -338,5 +343,20 @@ public class Particle3D : MonoBehaviour
         yield return new WaitForSeconds(time);
         gameObject.SetActive(false);
         WorldPhysics.Instance.removeFromList(gameObject);
+    }
+
+    public void RemoveChildren()
+    {
+        GameObject[] complex;
+        complex = GameObject.FindGameObjectsWithTag("Complex");
+        foreach (GameObject complexHull in complex)
+        {
+            if (!isCannonBall && !powerUp)
+            {
+                GameManager.manager.removeCastlePart(complexHull);
+            }
+            WorldPhysics.Instance.removeFromList(complexHull);
+            complexHull.SetActive(false);
+        }
     }
 }

@@ -39,10 +39,10 @@ public class WorldPhysics : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        foreach (var col in activeCollisions)
+        /*foreach (var col in activeCollisions)
         {
             col.GetComponent<Renderer>().material.color = Color.blue;
-        }
+        }*/
 
         for (var i = 0; i < activeCollisions.Count; i++)
         {
@@ -55,7 +55,7 @@ public class WorldPhysics : MonoBehaviour
                     if (collisionInfo != null)
                     {
                         allCollisionInfo.Add(collisionInfo);
-                        col.GetComponent<Renderer>().material.color = Color.red;
+                        //col.GetComponent<Renderer>().material.color = Color.red;
                     }
                 }
             }
@@ -70,6 +70,7 @@ public class WorldPhysics : MonoBehaviour
             if (colInfo.RigidBodyA.tag == "CannonBall" && colInfo.RigidBodyB.tag == "OuterWall")
             {
                 colInfo.RigidBodyB.RemoveObject();
+                colInfo.RigidBodyA.RemoveObject();
                 colInfo.RigidBodyA.resetAngularValues();
                 colInfo.RigidBodyB.resetAngularValues();
                 colInfo.RigidBodyA.hasHit = true;
@@ -89,6 +90,15 @@ public class WorldPhysics : MonoBehaviour
                 //colInfo.RigidBodyB.resetAngularValues();
                 //colInfo.RigidBodyB.hasHit = true;
                 Cannon.GetComponent<CannonMove>().addAmmo();
+            }
+            else if (colInfo.RigidBodyA.tag == "CannonBall" && colInfo.RigidBodyB.tag == "Complex")
+            {
+                colInfo.RigidBodyA.RemoveObject();
+                colInfo.RigidBodyB.RemoveChildren();
+                colInfo.RigidBodyA.resetAngularValues();
+                colInfo.RigidBodyB.resetAngularValues();
+                colInfo.RigidBodyA.hasHit = true;
+                colInfo.RigidBodyB.hasHit = true;
             }
             ResolveVelocity(colInfo);
             ResolvePenetration(colInfo);

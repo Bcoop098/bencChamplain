@@ -11,6 +11,9 @@ public class CannonMove : MonoBehaviour
 
     [SerializeField]
     GameObject cannonBall;
+
+    [SerializeField]
+    GameObject particle;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,7 +23,7 @@ public class CannonMove : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.DownArrow) || (Input.GetKeyDown(KeyCode.D)))
+        if (Input.GetKeyDown(KeyCode.DownArrow) || (Input.GetKeyDown(KeyCode.S)))
         {
             if (transform.position.y >= 4.8)
             {
@@ -29,7 +32,7 @@ public class CannonMove : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.UpArrow) || (Input.GetKeyDown(KeyCode.W)))
         {
-            if (transform.position.y <= 8)
+            if (transform.position.y <= 16)
             {
                 transform.position += Vector3.up;
             }
@@ -40,8 +43,9 @@ public class CannonMove : MonoBehaviour
             {
                 if(ammoCount > 0)
                 {
-                    Vector3 pos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+                    Vector3 pos = new Vector3(transform.position.x +1f, transform.position.y+1f, transform.position.z);
                     Instantiate(cannonBall, pos, Quaternion.identity);
+                    Instantiate(particle, new Vector3(transform.position.x + 1f, transform.position.y + 1f, transform.position.z), Quaternion.identity);
                     canFire = false;
                     ammoCount--;
                     StartCoroutine("FireRate");
