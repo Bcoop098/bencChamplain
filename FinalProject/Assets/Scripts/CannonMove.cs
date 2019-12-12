@@ -15,9 +15,12 @@ public class CannonMove : MonoBehaviour
     [SerializeField]
     GameObject particle;
     // Start is called before the first frame update
+
+    bool isGameOver;
     void Start()
     {
         canFire = true;
+        isGameOver = false;
     }
 
     // Update is called once per frame
@@ -25,14 +28,14 @@ public class CannonMove : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.DownArrow) || (Input.GetKeyDown(KeyCode.S)))
         {
-            if (transform.position.y >= 4.8)
+            if (transform.position.y >= 4) //limit downward movement
             {
                 transform.position += Vector3.down;
             }
         }
         if (Input.GetKeyDown(KeyCode.UpArrow) || (Input.GetKeyDown(KeyCode.W)))
         {
-            if (transform.position.y <= 16)
+            if (transform.position.y <= 23) //limit upward movement
             {
                 transform.position += Vector3.up;
             }
@@ -53,12 +56,24 @@ public class CannonMove : MonoBehaviour
                     
             }
         }
+
+        if (ammoCount == 0)
+        {
+            StartCoroutine("GameOver"); //starts a game over check
+        }
     }
 
     IEnumerator FireRate()
     {
         yield return new WaitForSecondsRealtime(2f);
         canFire = true;
+    }
+
+    IEnumerator GameOver()
+    {
+        yield return new WaitForSecondsRealtime(10f);
+        isGameOver = true;
+        
     }
 
     public int getAmmoCount()
@@ -69,5 +84,11 @@ public class CannonMove : MonoBehaviour
     public void addAmmo()
     {
         ammoCount++;
+        StopCoroutine("GameOver"); //stops the game over check in case you had 0 shots and gained one
+    }
+
+    public bool getGameStatus()
+    {
+        return isGameOver;
     }
 }

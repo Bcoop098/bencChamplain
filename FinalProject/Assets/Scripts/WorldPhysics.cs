@@ -70,11 +70,13 @@ public class WorldPhysics : MonoBehaviour
             if (colInfo.RigidBodyA.tag == "CannonBall" && colInfo.RigidBodyB.tag == "OuterWall")
             {
                 colInfo.RigidBodyB.RemoveObject();
-                colInfo.RigidBodyA.RemoveObject();
                 colInfo.RigidBodyA.resetAngularValues();
                 colInfo.RigidBodyB.resetAngularValues();
                 colInfo.RigidBodyA.hasHit = true;
                 colInfo.RigidBodyB.hasHit = true;
+                ResolveVelocity(colInfo);
+                ResolvePenetration(colInfo);
+                colInfo.RigidBodyA.addToBounceCount();
             }
             else if (colInfo.RigidBodyA.tag == "CannonBall" && colInfo.RigidBodyB.tag == "Ground")
             {
@@ -83,25 +85,63 @@ public class WorldPhysics : MonoBehaviour
                 colInfo.RigidBodyA.hasHit = true;
                 colInfo.RigidBodyB.hasHit = true;
                 colInfo.RigidBodyA.addFriction();
+                ResolveVelocity(colInfo);
+                ResolvePenetration(colInfo);
             }
             else if (colInfo.RigidBodyA.tag == "CannonBall" && colInfo.RigidBodyB.tag == "PowerUp")
             {
                 colInfo.RigidBodyB.RemoveObject();
-                //colInfo.RigidBodyB.resetAngularValues();
-                //colInfo.RigidBodyB.hasHit = true;
                 Cannon.GetComponent<CannonMove>().addAmmo();
             }
             else if (colInfo.RigidBodyA.tag == "CannonBall" && colInfo.RigidBodyB.tag == "Complex")
             {
-                colInfo.RigidBodyA.RemoveObject();
-                colInfo.RigidBodyB.RemoveChildren();
+                if (colInfo.RigidBodyB.transform.parent.tag == "Holder")
+                    colInfo.RigidBodyB.RemoveChildren();
+                else if (colInfo.RigidBodyB.transform.parent.tag == "Holder2")
+                    colInfo.RigidBodyB.RemoveChildren2();
+                colInfo.RigidBodyA.addToBounceCount();
                 colInfo.RigidBodyA.resetAngularValues();
                 colInfo.RigidBodyB.resetAngularValues();
                 colInfo.RigidBodyA.hasHit = true;
                 colInfo.RigidBodyB.hasHit = true;
+                ResolveVelocity(colInfo);
+                ResolvePenetration(colInfo);
             }
-            ResolveVelocity(colInfo);
-            ResolvePenetration(colInfo);
+
+            else if (colInfo.RigidBodyA.tag == "EndGame" && colInfo.RigidBodyB.tag == "EndGame")
+            {
+                colInfo.RigidBodyB.RemoveObject();
+                colInfo.RigidBodyA.RemoveObject();
+                GameManager.manager.Fireworks1();
+            }
+
+            else if (colInfo.RigidBodyA.tag == "EndGame2" && colInfo.RigidBodyB.tag == "EndGame2")
+            {
+                colInfo.RigidBodyB.RemoveObject();
+                colInfo.RigidBodyA.RemoveObject();
+                GameManager.manager.Fireworks2();
+            }
+
+            else if (colInfo.RigidBodyA.tag == "EndGame3" && colInfo.RigidBodyB.tag == "EndGame3")
+            {
+                colInfo.RigidBodyB.RemoveObject();
+                colInfo.RigidBodyA.RemoveObject();
+                GameManager.manager.Fireworks3();
+            }
+
+            else if (colInfo.RigidBodyA.tag == "EndGame4" && colInfo.RigidBodyB.tag == "EndGame4")
+            {
+                colInfo.RigidBodyB.RemoveObject();
+                colInfo.RigidBodyA.RemoveObject();
+                GameManager.manager.Fireworks4();
+            }
+
+            else if (colInfo.RigidBodyA.tag == "CannonBall" && colInfo.RigidBodyB.tag == "CannonBall")
+            {
+                ResolveVelocity(colInfo);
+                ResolvePenetration(colInfo);
+            }
+
         }
         allCollisionInfo.Clear();
     }

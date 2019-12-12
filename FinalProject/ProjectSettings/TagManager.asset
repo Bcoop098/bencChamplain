@@ -9,6 +9,12 @@ TagManager:
   - Ground
   - PowerUp
   - Complex
+  - Holder
+  - Holder2
+  - EndGame
+  - EndGame2
+  - EndGame3
+  - EndGame4
   layers:
   - Default
   - TransparentFX

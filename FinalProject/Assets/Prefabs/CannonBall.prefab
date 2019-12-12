@@ -108,7 +108,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isCannonBall: 1
-  timeToDisable: 7
+  timeToDisable: 20
   onGround: 0
   powerUp: 0
   position: {x: 0, y: 0, z: 0}
@@ -127,6 +127,7 @@ MonoBehaviour:
   restitution: 1
   gravity: -3
   hasHit: 0
+  bounceCount: 0
 --- !u!114 &1341255998781018162
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -55,6 +55,13 @@ public class Particle3D : MonoBehaviour
 
     public bool hasHit = false;
 
+    [SerializeField]
+    int bounceCount;
+
+
+    [SerializeField]
+    bool isPartOfEnd;
+
     //drop down menu
     public enum Physics
     {
@@ -80,7 +87,7 @@ public class Particle3D : MonoBehaviour
         onGround = false;
         if(isCannonBall)
         {
-            //StartCoroutine(Disable(timeToDisable));
+            StartCoroutine(Disable(timeToDisable));
         }
         WorldPhysics.Instance.addToList(gameObject);
         if (shapeType == Shape.SolidSphere)
@@ -140,7 +147,12 @@ public class Particle3D : MonoBehaviour
 
     private void Update()
     {
-        
+        if (bounceCount >= 2)
+        {
+            StopAllCoroutines();
+            gameObject.SetActive(false);
+            WorldPhysics.Instance.removeFromList(gameObject);
+        }
     }
     // Update is called once per frame
     void FixedUpdate()
@@ -149,7 +161,6 @@ public class Particle3D : MonoBehaviour
         {
             Vector3 dragLocation = new Vector3(position.x + 2, position.y, position.z);
             float cannonBallArea = Mathf.PI * (InertiaTensor.tensor.radius * InertiaTensor.tensor.radius);
-            //ApplyForce(dragLocation,(generateDrag(velocity, new Vector3(1, 1, 1), 2.5f, cannonBallArea, 5f)));
             ApplyForce(dragLocation, newDrag());
         }
         if (!hasHit)
@@ -157,8 +168,15 @@ public class Particle3D : MonoBehaviour
             ApplyForce(forceLocation, forceAmount);
         }
         else if(hasHit && !onGround)
+        {   
             ApplyForce(forceLocation, -forceAmount);
-        ApplyForce(position, generateGravityForce(gravity, Vector3.up, mass));
+        }
+
+        if (!isPartOfEnd)
+        {
+            ApplyForce(position, generateGravityForce(gravity, Vector3.up, mass));
+        }
+        
 
         if (onGround )
         {
@@ -166,31 +184,26 @@ public class Particle3D : MonoBehaviour
             ApplyForce(inFront, generateFriction(Vector3.up, velocity*2, 3f));
         }
 
-        //UpdateRotationKinematic(Time.fixedDeltaTime);
 
 
         if (calculationType == Physics.Euler)
         {
             UpdatePositionEulerExplicit(Time.fixedDeltaTime);
-            //transform.position = position;//set the new position
             UpdateRotationEulerExplicit(Time.fixedDeltaTime);
-            //transform.rotation = rotation; ;//set the new rotation
         }
 
         //if Kinematic is selected, do this
         else if (calculationType == Physics.Kinematic)
         {
             UpdatePositionKinematic(Time.fixedDeltaTime);
-            //transform.position = position; //set the new position
             UpdateRotationKinematic(Time.fixedDeltaTime);
-            //transform.rotation = rotation; //set the new rotation
         }
 
         objectToWorldTransform = Matrix4x4.TRS(position, rotation, Vector3.one);
         worldToObjectTransform = objectToWorldTransform.transpose;
 
         //Useful for bonus
-        invInertiaWorldSpace = objectToWorldTransform * invInertiaLocalSpace * worldToObjectTransform;
+        //invInertiaWorldSpace = objectToWorldTransform * invInertiaLocalSpace * worldToObjectTransform;
 
         updateAngularAcceleration();
         UpdateAcceleration();
@@ -347,16 +360,32 @@ public class Particle3D : MonoBehaviour
 
     public void RemoveChildren()
     {
-        GameObject[] complex;
-        complex = GameObject.FindGameObjectsWithTag("Complex");
-        foreach (GameObject complexHull in complex)
+        GameObject complex;
+        complex = GameObject.FindGameObjectWithTag("Holder");
+        for(int i = 0; i < complex.transform.childCount; i++)
         {
-            if (!isCannonBall && !powerUp)
-            {
-                GameManager.manager.removeCastlePart(complexHull);
-            }
-            WorldPhysics.Instance.removeFromList(complexHull);
-            complexHull.SetActive(false);
+            WorldPhysics.Instance.removeFromList(complex.transform.GetChild(i).gameObject);
+            complex.transform.GetChild(i).gameObject.SetActive(false);
         }
+        GameManager.manager.removeCastlePart(complex);
+        //complex.SetActive(false);
+    }
+
+    public void RemoveChildren2()
+    {
+        GameObject complex;
+        complex = GameObject.FindGameObjectWithTag("Holder2");
+        for (int i = 0; i < complex.transform.childCount; i++)
+        {
+            WorldPhysics.Instance.removeFromList(complex.transform.GetChild(i).gameObject);
+            complex.transform.GetChild(i).gameObject.SetActive(false);
+        }
+        GameManager.manager.removeCastlePart(complex);
+        //complex.SetActive(false);
+    }
+
+    public void addToBounceCount()
+    {
+        bounceCount++;
     }
 }
